@@ -1,0 +1,70 @@
+{
+  "tenant": [
+    {
+      "id": 1,
+      "account": "alice0050722@gmail.com",
+      "password": "12345",
+      "name": "YinMin",
+      "gender": 1,
+      "identity": 0
+    }
+  ],
+  "landlord": [
+    {
+      "id": 1,
+      "intro": "hi",
+      "lease": "...",
+      "updateTime": "2020/2/21"
+    },
+    {
+      "id": 2
+    }
+  ],
+  "house": [
+    {
+      "id": 1,
+      "name": "鹽埕愛河畔翻新時尚套房出租",
+      "imgUrl": "",
+      "info": "鹽埕愛河畔翻新時尚套房出租(屋主自租)臨愛河畔 浪漫多變 全翻新 小資宅近駁二藝術特區 棧貳庫 高雄電影館 休閒有去處近捷運鹽埕埔站 輕軌大公路站 陸續通車大勇商圈 鹽埕舊城區 文武百業 商店商場林立近家樂福愛河店 鹽埕市集 傳統小吃 生活便利",
+      "longitude": "",
+      "latitude": "",
+      "county": "高雄市",
+      "district": "鹽埕區",
+      "type": "大樓",
+      "deposit": "",
+      "fee": "450",
+      "pet": false,
+      "lease": "1",
+      "gender": 3,
+      "areal": "20",
+      "fire": true,
+      "carport": false,
+      "enroll": true,
+      "t_identity": 0
+    }
+  ],
+  "rooms": [
+    {
+      "id": 1,
+      "monthly": "6000",
+      "pattern": "雅房",
+      "square": "6.5",
+      "kitchen": false,
+      "window": true,
+      "balcony": false,
+      "bed": true,
+      "mattress": true,
+      "chair": true,
+      "sofa": false,
+      "desk": true,
+      "closet": true,
+      "fridge": true,
+      "tv": true,
+      "conditioner": true,
+      "heater": true,
+      "elevator": true,
+      "wifi": false,
+      "cable": true
+    }
+  ]
+}
