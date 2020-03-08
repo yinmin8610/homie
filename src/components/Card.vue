@@ -1,5 +1,5 @@
 <template>
-  <div class="card">
+  <div class="cards">
     <b-card
       title="Card Title"
       img-src="https://picsum.photos/600/300/?image=25"
@@ -13,8 +13,14 @@
   </div>
 </template>
 
-<style>
-  .card{
-    cursor: pointer;
+<style lang="scss">
+@import "node_modules/bootstrap/scss/bootstrap";
+@import "node_modules/bootstrap-vue/src/index.scss";
+.card {
+  cursor: pointer;
+}
+ a:hover {
+   color:#356df8;
+    text-decoration: none;
   }
 </style>

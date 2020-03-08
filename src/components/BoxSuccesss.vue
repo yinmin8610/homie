@@ -1,0 +1,21 @@
+<template>
+  <div class="reservation-amount">
+    <h1 class="h3 text-center my-4">完成租屋</h1>
+    <b-row class="justify-content-center mb-5">
+      <b-col md="5">
+        <div class="steps-line">
+          <div class="steps-pointer"></div>
+          <div class="steps-pointer"></div>
+          <div class="steps-pointer"></div>
+          <div class="steps-pointer"></div>
+          <div class="steps-pointer active"></div>
+        </div>
+      </b-col>
+    </b-row>
+    <div class="d-flex justify-content-center mb-5">
+      <img src="../assets/success.jpg" height="300" alt />
+    </div>
+    <b-button :to="{ path:'/houses' }" variant="outline-primary" size="lg" class="btn-block">繼續逛</b-button>
+    <b-button :to="{ path:'/tenant' }" variant="primary" size="lg" class="btn-block">查看紀錄</b-button>
+  </div>
+</template>

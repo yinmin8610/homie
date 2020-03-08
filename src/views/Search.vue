@@ -110,7 +110,7 @@
           </p>
           <b-row>
             <b-col sm="6" class="mb-2">
-              <Card></Card>
+              <b-link :to="{ path: '/houses/:id' }"><Card></Card></b-link>
             </b-col>
             <b-col sm="6" class="mb-2">
               <Card></Card>

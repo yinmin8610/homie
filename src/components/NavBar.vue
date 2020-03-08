@@ -3,11 +3,11 @@
     <b-navbar toggleable="md" type="light" variant="transparent">
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
-      <b-navbar-brand href="#">HOMIE</b-navbar-brand>
+      <b-navbar-brand :to="{ path: '/'}">HOMIE</b-navbar-brand>
 
-      <b-nav-text href="#" class="d-flex align-items-center order-md-1">
+      <b-nav-item :to="{ path: '/tenant'}" class="d-flex align-items-center order-md-1">
         <b-icon icon="person-fill" class="rounded bg-primary text-white"></b-icon>
-      </b-nav-text>
+      </b-nav-item>
 
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav class="ml-auto">
@@ -17,98 +17,164 @@
       </b-collapse>
     </b-navbar>
 
-    <b-modal id="modal-register" title="BootstrapVue">
-      <h2 class="my-4">註冊</h2>
-      <b-form inline>
-        <b-form-group
-          id="input-resgister-account"
-          label="帳號"
-          label-for="input-account"
-          class="mb-2"
-        >
-          <b-form-input
-            id="input-account"
-            v-model="register.email"
-            type="email"
-            required
-            placeholder="輸入Email帳號"
-          ></b-form-input>
-        </b-form-group>
-        <b-form-group
-          id="input-resgister-password"
-          label="密碼"
-          label-for="input-password"
-          class="mb-2"
-        >
-          <b-form-input
-            id="input-password"
-            v-model="register.password"
-            type="password"
-            required
-            placeholder="輸入密碼"
-          ></b-form-input>
-        </b-form-group>
-      </b-form>
-      <b-form inline>
-        <b-form-group id="input-resgister-name" label="暱稱" label-for="input-name" class="mb-2">
-          <b-form-input
-            id="input-name"
-            v-model="register.name"
-            type="text"
-            required
-            placeholder="輸入暱稱"
-          ></b-form-input>
-        </b-form-group>
-        <b-form-select
-          v-model="register.genderSelected"
-          :options="register.genderOptions"
-          class="mb-2 mr-sm-2 mb-sm-0"
-        ></b-form-select>
-      </b-form>
-      <b-form inline>
-        <b-form-select
-          v-model="register.idSelected"
-          :options="register.identityOptions"
-          class="mb-2 mr-sm-2 mb-sm-0"
-        ></b-form-select>
-        <b-button variant="primary" size="lg">註冊</b-button>
-      </b-form>
+    <b-modal id="modal-register" title="註冊" hide-footer>
+      <ValidationObserver ref="observer" v-slot="{ passes, invalid }">
+        <b-form @submit.prevent="passes(onSubmit)" @reset="resetForm">
+          <ValidationProvider name="Email" rules="required|email" v-slot="{ errors, valid }">
+            <b-form-group
+              id="input-resgister-account"
+              label="帳號"
+              label-for="input-account"
+              class="mb-2"
+            >
+              <b-form-input
+                id="input-account"
+                v-model="register.email"
+                type="email"
+                :state="errors[0] ? false : (valid ? true : null)"
+                placeholder="輸入Email帳號"
+              ></b-form-input>
+              <b-form-invalid-feedback id="inputLiveFeedback">{{ errors[0] }}</b-form-invalid-feedback>
+            </b-form-group>
+          </ValidationProvider>
+
+          <ValidationProvider name="密碼" rules="required|length:5" vid="password" v-slot="{ errors, valid }">
+            <b-form-group label="密碼" class="mb-2">
+              <b-form-input
+                v-model="register.password"
+                type="password"
+                :state="errors[0] ? false : (valid ? true : null)"
+                placeholder="輸入密碼"
+              ></b-form-input>
+              <b-form-invalid-feedback id="inputLiveFeedback">{{ errors[0] }}</b-form-invalid-feedback>
+            </b-form-group>
+          </ValidationProvider>
+
+          <ValidationProvider
+            rules="required|confirmed:password"
+            name="確認密碼"
+            v-slot="{ valid, errors }"
+          >
+            <b-form-group label="確認密碼" label-for="input-password-confirm" class="mb-2">
+              <b-form-input
+                type="password"
+                v-model="register.confirmation"
+                :state="errors[0] ? false : (valid ? true : null)"
+                placeholder="重新輸入密碼"
+              ></b-form-input>
+              <b-form-invalid-feedback id="inputLiveFeedback">{{ errors[0] }}</b-form-invalid-feedback>
+            </b-form-group>
+          </ValidationProvider>
+
+          <ValidationProvider name="暱稱" rules="required" v-slot="{ errors, valid }">
+            <b-form-group id="input-resgister-name" label="暱稱" label-for="input-name" class="mb-2">
+              <b-form-input
+                id="input-name"
+                v-model="register.name"
+                type="text"
+                placeholder="輸入暱稱"
+                :state="errors[0] ? false : (valid ? true : null)"
+              ></b-form-input>
+              <b-form-invalid-feedback id="inputLiveFeedback">{{ errors[0] }}</b-form-invalid-feedback>
+            </b-form-group>
+          </ValidationProvider>
+
+          <ValidationProvider name="性別" rules="required" v-slot="{ valid, errors }">
+            <b-form-group
+              id="input-resgister-gender"
+              label="性別"
+              label-for="input-gender"
+              class="mb-2"
+            >
+              <b-form-select
+                id="input-gender"
+                v-model="register.genderSelected"
+                :options="register.genderOptions"
+                class="mb-2 mr-sm-2 mb-sm-0"
+                :state="errors[0] ? false : (valid ? true : null)"
+              ></b-form-select>
+            </b-form-group>
+          </ValidationProvider>
+
+          <ValidationProvider name="身份" rules="required" v-slot="{ valid, errors }">
+            <b-form-group
+              id="input-resgister-identity"
+              label="身份"
+              label-for="input-identity"
+              class="mb-2"
+            >
+              <b-form-select
+                id="input-identity"
+                v-model="register.idSelected"
+                :options="register.identityOptions"
+                class="mb-2 mr-sm-2 mb-sm-0"
+                :state="errors[0] ? false : (valid ? true : null)"
+              ></b-form-select>
+            </b-form-group>
+          </ValidationProvider>
+          <div class="d-flex justify-content-end">
+          <b-button :disabled="invalid" type="submit" variant="primary">註冊</b-button>
+          </div>
+        </b-form>
+      </ValidationObserver>
     </b-modal>
 
-    <b-modal id="modal-login" title="BootstrapVue">
-      <h2 class="my-4">登入</h2>
-      <b-form>
-        <b-form-group id="input-login-account" label="帳號" label-for="input-login-account">
-          <b-form-input
-            id="input-account"
-            v-model="login.email"
-            type="email"
-            required
-            placeholder="輸入Email帳號"
-          ></b-form-input>
-        </b-form-group>
-        <b-form-group id="input-login-password" label="密碼" label-for="input-login-password">
-          <b-form-input
-            id="input-password"
-            v-model="login.password"
-            type="password"
-            required
-            placeholder="輸入密碼"
-          ></b-form-input>
-        </b-form-group>
-      </b-form>
+    <b-modal id="modal-login" title="登入" hide-footer>
+      <ValidationObserver ref="observer" v-slot="{ passes, invalid }">
+        <b-form @submit.prevent="passes(onSubmit)" @reset="resetForm">
+          <ValidationProvider name="Email" rules="required|email" v-slot="{ errors, valid }">
+            <b-form-group id="input-login-account" label="帳號" label-for="input-login-account">
+              <b-form-input
+                id="input-account"
+                v-model="login.email"
+                type="email"
+                placeholder="輸入Email帳號"
+                :state="errors[0] ? false : (valid ? true : null)"
+              ></b-form-input>
+              <b-form-invalid-feedback id="inputLiveFeedback">{{ errors[0] }}</b-form-invalid-feedback>
+            </b-form-group>
+          </ValidationProvider>
+
+          <ValidationProvider name="密碼" rules="required|length:5" v-slot="{ errors, valid }">
+            <b-form-group id="input-login-password" label="密碼" label-for="input-login-password">
+              <b-form-input
+                id="input-password"
+                v-model="login.password"
+                type="password"
+                placeholder="輸入密碼"
+                :state="errors[0] ? false : (valid ? true : null)"
+              ></b-form-input>
+              <b-form-invalid-feedback id="inputLiveFeedback">{{ errors[0] }}</b-form-invalid-feedback>
+            </b-form-group>
+          </ValidationProvider>
+          <div class="d-flex justify-content-end">
+          <b-button :disabled="invalid" type="submit" variant="primary">登入</b-button>
+          </div>
+        </b-form>
+      </ValidationObserver>
     </b-modal>
   </div>
 </template>
 
 <script>
+import { ValidationObserver, ValidationProvider, localize } from 'vee-validate'
+import TW from 'vee-validate/dist/locale/zh_TW.json'
+
+localize('zh_TW', TW)
+
 export default {
   name: 'NavBar',
+  components: {
+    ValidationObserver,
+    ValidationProvider
+  },
   data () {
     return {
+      value: '',
       register: {
         email: '',
         password: '',
+        confirmation: '',
         genderSelected: 0,
         idSelected: 0,
         genderOptions: [
@@ -124,6 +190,23 @@ export default {
         email: '',
         password: ''
       }
+    }
+  },
+  methods: {
+    onSubmit () {
+      console.log('Form submitted yay!')
+    },
+    resetForm () {
+      this.register.email = ''
+      this.register.password = ''
+      this.register.confirmation = ''
+      this.register.genderSelected = ''
+      this.register.idSelected = ''
+      this.login.email = ''
+      this.login.password = ''
+      requestAnimationFrame(() => {
+        this.$refs.observer.reset()
+      })
     }
   }
 }

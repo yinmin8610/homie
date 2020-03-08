@@ -176,7 +176,7 @@
             </section>
           </b-col>
         </b-row>
-        <b-button variant="primary" size="lg" class="btn-block">確認預約</b-button>
+        <b-button :to="{ path: '/reservation' }" variant="primary" size="lg" class="btn-block">確認預約</b-button>
       </b-container>
     </section>
   </div>
