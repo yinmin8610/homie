@@ -22,49 +22,128 @@
                     :options="countyOptions"
                     size="lg"
                     class="mb-2 mr-sm-2 mb-sm-0"
-                  ></b-form-select>
+                    @change="selected"
+                    disabled-field="notEnabled"
+                  >
+                  </b-form-select>
                   <b-form-select
                     v-model="districtSelected"
                     :options="districtOptions"
                     size="lg"
                     class="mb-2 mr-sm-2 mb-sm-0"
+                    disabled-field="notEnabled"
                   ></b-form-select>
-                  <b-button :to="{ path: '/houses' }" variant="primary" class="searchBtn" size="lg">搜尋</b-button>
+                  <b-button
+                    :to="{ path: '/houses', query: {countySelected:countySelected, districtSelected:districtSelected}}"
+                    variant="primary"
+                    class="searchBtn"
+                    size="lg"
+                  >搜尋</b-button>
                 </b-form>
               </div>
             </b-col>
           </b-row>
         </b-col>
       </b-row>
+      <section class="py-5">
+        <h2 class="h4 py-2">
+          <label class="text-primary">關於</label> HOMIE
+        </h2>
+        <b-row>
+          <b-col md="6"></b-col>
+          <b-col md="6">
+            <div class="icon d-flex align-items-center mb-4">
+              <b-icon icon="calendar" variant="primary" class="h2 bg-info p-1 rounded-circle mr-2"></b-icon>
+              <span class="text-primary h5">線上預約</span>
+            </div>
+            <div class="icon d-flex align-items-center mb-4">
+              <b-icon icon="book" variant="primary" class="h2 bg-info p-1 rounded-circle mr-2"></b-icon>
+              <span class="text-primary h5">完整記錄</span>
+            </div>
+            <div class="icon d-flex align-items-center">
+              <b-icon icon="map" variant="primary" class="h2 bg-info p-1 rounded-circle mr-2"></b-icon>
+              <span class="text-primary h5">地圖</span>
+            </div>
+          </b-col>
+        </b-row>
+      </section>
+      <section class="py-5">
+        <h2 class="h4 py-2">
+          <label class="text-primary">200+</label> 房源可租
+        </h2>
+        <div class="bg-info p-5">
+          <b-row class="mb-4">
+            <b-col>
+              <Card></Card>
+            </b-col>
+            <b-col>
+              <Card></Card>
+            </b-col>
+            <b-col>
+              <Card></Card>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col>
+              <Card></Card>
+            </b-col>
+            <b-col>
+              <Card></Card>
+            </b-col>
+            <b-col>
+              <Card></Card>
+            </b-col>
+          </b-row>
+        </div>
+      </section>
     </b-container>
   </div>
 </template>
 
 <script>
-
+import Card from '@/components/Card.vue'
 export default {
   name: 'Index',
+  components: {
+    Card
+  },
   data () {
     return {
-      imgUrl:
-        'https://images.unsplash.com/photo-1518780664697-55e3ad937233?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=802&q=80',
+      data: [],
       countySelected: null,
       districtSelected: null,
-      countyOptions: [
-        { value: null, text: '選擇城市' },
-        { value: 'a', text: 'This is First option' },
-        { value: 'b', text: 'Selected Option' },
-        { value: 'd', text: 'This one is disabled', disabled: true }
-      ],
-      districtOptions: [
-        { value: null, text: '選擇地區' },
-        { value: 'a', text: 'This is First option' },
-        { value: 'b', text: 'Selected Option' },
-        { value: 'd', text: 'This one is disabled', disabled: true }
-      ]
+      countyOptions: [{ value: null, text: '選擇城市', notEnabled: true }],
+      districtOptions: [{ value: null, text: '選擇地區', notEnabled: true }]
     }
   },
   methods: {
+    getData () {
+      const vm = this
+      const api =
+        'https://raw.githubusercontent.com/donma/TaiwanAddressCityAreaRoadChineseEnglishJSON/master/CityCountyData.json'
+      this.axios.get(api).then(response => {
+        vm.data = response.data
+        vm.data.forEach(item => {
+          this.countyOptions.push(item.CityName)
+        })
+      })
+    },
+    selected () {
+      const vm = this
+      vm.data.forEach(item => {
+        if (item.CityName === this.countySelected) {
+          const cache = []
+          item.AreaList.forEach(area => {
+            cache.push(area.AreaName)
+          })
+
+          this.districtOptions = cache
+        }
+      })
+    }
+  },
+  created () {
+    this.getData()
   }
 }
 </script>
@@ -93,9 +172,9 @@ body {
     margin-left: -300px;
   }
 }
-.searchBtn{
+.searchBtn {
   @include media-breakpoint-down(sm) {
-    width:100%;
+    width: 100%;
   }
 }
 </style>

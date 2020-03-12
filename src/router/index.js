@@ -1,13 +1,12 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import ErrorPage from '@/views/404.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '*',
-    redirect: ErrorPage // 404
+    redirect: '/404'
   },
   // 登入前
   {
@@ -36,6 +35,11 @@ const routes = [
         component: () => import('../views/Landlord.vue')
       }
     ]
+  },
+  {
+    path: '/404',
+    name: '404',
+    component: () => import('../views/404.vue')
   },
   // 登入後
   {

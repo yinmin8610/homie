@@ -1,4 +1,242 @@
 {
+  "login": [
+    {
+      "id": 1,
+      "account": "alice0050722@gmail.com",
+      "password": "12345"
+    },
+    {
+      "email": "1234@gmail.com",
+      "password": "12345",
+      "id": 2
+    }
+  ],
+  "register": [
+    {
+      "id": 1,
+      "account": "",
+      "password": "",
+      "confirmPassword": "",
+      "name": "",
+      "gender": "",
+      "identity": ""
+    },
+    {
+      "email": "",
+      "password": "",
+      "id": 2
+    },
+    {
+      "email": "a@gmail.com",
+      "password": "12345",
+      "confirmation": "12345",
+      "genderSelected": 0,
+      "idSelected": 0,
+      "genderOptions": [
+        {
+          "value": 0,
+          "text": "男"
+        },
+        {
+          "value": 1,
+          "text": "女"
+        }
+      ],
+      "identityOptions": [
+        {
+          "value": 0,
+          "text": "學生"
+        },
+        {
+          "value": 1,
+          "text": "上班族"
+        }
+      ],
+      "name": "1",
+      "id": 3
+    },
+    {
+      "1234@gmail.com": "",
+      "id": 4
+    },
+    {
+      "email": "1234@gmail.com",
+      "password": "12345",
+      "confirmation": "12345",
+      "name": "穎旻",
+      "genderSelected": 0,
+      "idSelected": 0,
+      "genderOptions": [
+        {
+          "value": 0,
+          "text": "男"
+        },
+        {
+          "value": 1,
+          "text": "女"
+        }
+      ],
+      "identityOptions": [
+        {
+          "value": 0,
+          "text": "學生"
+        },
+        {
+          "value": 1,
+          "text": "上班族"
+        }
+      ],
+      "id": 5
+    },
+    {
+      "email": "1234@gmail.com",
+      "password": "12345",
+      "confirmation": "12345",
+      "name": "穎旻",
+      "genderSelected": 1,
+      "idSelected": 1,
+      "genderOptions": [
+        {
+          "value": 0,
+          "text": "男"
+        },
+        {
+          "value": 1,
+          "text": "女"
+        }
+      ],
+      "identityOptions": [
+        {
+          "value": 0,
+          "text": "學生"
+        },
+        {
+          "value": 1,
+          "text": "上班族"
+        }
+      ],
+      "id": 6
+    },
+    {
+      "email": "",
+      "password": "",
+      "confirmation": "",
+      "name": "",
+      "genderSelected": "",
+      "idSelected": "",
+      "genderOptions": [
+        {
+          "value": 0,
+          "text": "男"
+        },
+        {
+          "value": 1,
+          "text": "女"
+        }
+      ],
+      "identityOptions": [
+        {
+          "value": 0,
+          "text": "學生"
+        },
+        {
+          "value": 1,
+          "text": "上班族"
+        }
+      ],
+      "id": 7
+    },
+    {
+      "email": "1234@gmail.com",
+      "password": "12345",
+      "confirmation": "12345",
+      "name": "穎旻",
+      "genderSelected": 0,
+      "idSelected": 0,
+      "genderOptions": [
+        {
+          "value": 0,
+          "text": "男"
+        },
+        {
+          "value": 1,
+          "text": "女"
+        }
+      ],
+      "identityOptions": [
+        {
+          "value": 0,
+          "text": "學生"
+        },
+        {
+          "value": 1,
+          "text": "上班族"
+        }
+      ],
+      "id": 8
+    },
+    {
+      "email": "1234@gmail.com",
+      "password": "12345",
+      "confirmation": "12345",
+      "name": "穎旻",
+      "genderSelected": 0,
+      "idSelected": 0,
+      "genderOptions": [
+        {
+          "value": 0,
+          "text": "男"
+        },
+        {
+          "value": 1,
+          "text": "女"
+        }
+      ],
+      "identityOptions": [
+        {
+          "value": 0,
+          "text": "學生"
+        },
+        {
+          "value": 1,
+          "text": "上班族"
+        }
+      ],
+      "id": 9
+    },
+    {
+      "email": "1234@gmail.com",
+      "password": "12345",
+      "confirmation": "12345",
+      "name": "1",
+      "genderSelected": 0,
+      "idSelected": 0,
+      "genderOptions": [
+        {
+          "value": 0,
+          "text": "男"
+        },
+        {
+          "value": 1,
+          "text": "女"
+        }
+      ],
+      "identityOptions": [
+        {
+          "value": 0,
+          "text": "學生"
+        },
+        {
+          "value": 1,
+          "text": "上班族"
+        }
+      ],
+      "id": 10
+    }
+  ],
+  "check": [
+    {}
+  ],
   "tenant": [
     {
       "id": 1,
@@ -46,6 +284,7 @@
   "rooms": [
     {
       "id": 1,
+      "name": "鹽埕愛河畔翻新時尚套房出租",
       "monthly": "6000",
       "pattern": "雅房",
       "square": "6.5",
@@ -65,6 +304,29 @@
       "elevator": true,
       "wifi": false,
       "cable": true
+    },
+    {
+      "id": "2",
+      "name": "鹽埕愛河畔翻新時尚套房出租2",
+      "monthly": "12000",
+      "pattern": "獨立套房",
+      "square": "15",
+      "kitchen": "",
+      "window": "",
+      "balcony": "",
+      "bed": "",
+      "mattress": "",
+      "chair": "",
+      "sofa": "",
+      "desk": "",
+      "closet": "",
+      "fridge": "",
+      "tv": "",
+      "conditioner": "",
+      "heater": "",
+      "elevator": "",
+      "wifi": "",
+      "cable": ""
     }
   ]
 }

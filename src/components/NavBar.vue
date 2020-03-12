@@ -1,20 +1,20 @@
 <template>
   <div class="navBar">
-    <b-navbar toggleable="md" type="light" variant="transparent">
-      <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+    <b-navbar toggleable="md" type="light" variant="transparent" class="my-1">
+        <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
-      <b-navbar-brand :to="{ path: '/'}">HOMIE</b-navbar-brand>
+        <b-navbar-brand :to="{ path: '/'}">HOMIE</b-navbar-brand>
 
-      <b-nav-item :to="{ path: '/tenant'}" class="d-flex align-items-center order-md-1">
-        <b-icon icon="person-fill" class="rounded bg-primary text-white"></b-icon>
-      </b-nav-item>
+        <b-nav-item :to="{ path: '/tenant'}" class="d-flex align-items-center order-md-1">
+          <b-icon icon="person-fill" class="rounded bg-primary text-white"></b-icon>
+        </b-nav-item>
 
-      <b-collapse id="nav-collapse" is-nav>
-        <b-navbar-nav class="ml-auto">
-          <b-nav-item href="#" v-b-modal.modal-register>註冊</b-nav-item>
-          <b-nav-item href="#" v-b-modal.modal-login>登入</b-nav-item>
-        </b-navbar-nav>
-      </b-collapse>
+        <b-collapse id="nav-collapse" is-nav>
+          <b-navbar-nav class="ml-auto">
+            <b-nav-item href="#" v-b-modal.modal-register>註冊</b-nav-item>
+            <b-nav-item href="#" v-b-modal.modal-login>登入</b-nav-item>
+          </b-navbar-nav>
+        </b-collapse>
     </b-navbar>
 
     <b-modal id="modal-register" title="註冊" hide-footer>
@@ -38,7 +38,12 @@
             </b-form-group>
           </ValidationProvider>
 
-          <ValidationProvider name="密碼" rules="required|length:5" vid="password" v-slot="{ errors, valid }">
+          <ValidationProvider
+            name="密碼"
+            rules="required|length:5"
+            vid="password"
+            v-slot="{ errors, valid }"
+          >
             <b-form-group label="密碼" class="mb-2">
               <b-form-input
                 v-model="register.password"
@@ -113,7 +118,7 @@
             </b-form-group>
           </ValidationProvider>
           <div class="d-flex justify-content-end">
-          <b-button :disabled="invalid" type="submit" variant="primary">註冊</b-button>
+            <b-button :disabled="invalid" type="submit" variant="primary" @click="signup">註冊</b-button>
           </div>
         </b-form>
       </ValidationObserver>
@@ -148,7 +153,7 @@
             </b-form-group>
           </ValidationProvider>
           <div class="d-flex justify-content-end">
-          <b-button :disabled="invalid" type="submit" variant="primary">登入</b-button>
+            <b-button :disabled="invalid" type="submit" variant="primary" @click="signin">登入</b-button>
           </div>
         </b-form>
       </ValidationObserver>
@@ -175,6 +180,7 @@ export default {
         email: '',
         password: '',
         confirmation: '',
+        name: '',
         genderSelected: 0,
         idSelected: 0,
         genderOptions: [
@@ -193,6 +199,35 @@ export default {
     }
   },
   methods: {
+    signup () {
+      const vm = this
+      const api = `${process.env.VUE_APP_APIPATH}/register`
+
+      this.axios.post(api, vm.register).then(response => {
+        vm.data = response.data
+        console.log(vm.data)
+        this.$bvModal.hide('modal-register')
+        vm.register.email = ''
+        vm.register.password = ''
+        vm.register.confirmation = ''
+        vm.register.name = ''
+      })
+    },
+    signin () {
+      const vm = this
+      const api = `${process.env.VUE_APP_APIPATH}/login`
+
+      this.axios.post(api, vm.login).then(response => {
+        vm.data = response.data
+        console.log(vm.data)
+        if (response.data.success) {
+          vm.$router.push('/tenant')
+          // this.$bvModal.hide('modal-register')
+          vm.login.email = ''
+          vm.login.password = ''
+        }
+      })
+    },
     onSubmit () {
       console.log('Form submitted yay!')
     },

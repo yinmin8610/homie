@@ -1,17 +1,27 @@
 <template>
   <div class="cards">
     <b-card
-      title="Card Title"
+      :title="card.name"
       img-src="https://picsum.photos/600/300/?image=25"
       img-alt="Image"
       img-top
-      tag="article"
       class="mb-2"
     >
-      <b-card-text>6,000/月</b-card-text>
+      <b-card-text class="d-flex justify-content-end h3">{{card.monthly}}</b-card-text>
     </b-card>
   </div>
 </template>
+
+<script>
+export default {
+  name: 'Card',
+  props: ['card'],
+  data () {
+    return {
+    }
+  }
+}
+</script>
 
 <style lang="scss">
 @import "node_modules/bootstrap/scss/bootstrap";
@@ -19,8 +29,11 @@
 .card {
   cursor: pointer;
 }
+a{
+  color:black;
+}
  a:hover {
-   color:#356df8;
+   color:black;
     text-decoration: none;
   }
 </style>

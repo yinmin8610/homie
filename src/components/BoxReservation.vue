@@ -4,9 +4,8 @@
        <ValidationObserver ref="observer" v-slot="{ passes, invalid}">
       <b-form @submit.prevent="passes(onSubmit)" @reset="resetForm">
       <div class="my-5">
-        <p class="font-weight-bold text-primary h4">
-          2020/2/26
-          <label>(三)</label>
+        <p class="font-weight-bold text-primary h4 mb-2">
+          {{ $route.params.dateValue }}
         </p>
         <b-form inline>
           <label class="sr-only">搜尋房源</label>

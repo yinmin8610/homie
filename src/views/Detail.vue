@@ -172,11 +172,11 @@
           </b-col>
           <b-col md="6">
             <section class="calendar bg-white p-4 border d-flex justify-content-center">
-               <b-calendar v-model="value" :date-disabled-fn="dateDisabled" locale="en"></b-calendar>
+               <b-calendar v-model="dateValue" :date-disabled-fn="dateDisabled" locale="en"></b-calendar>
             </section>
           </b-col>
         </b-row>
-        <b-button :to="{ path: '/reservation' }" variant="primary" size="lg" class="btn-block">確認預約</b-button>
+        <b-button :to="{ name: 'BoxReservation', params: { dateValue: dateValue }}" variant="primary" size="lg" class="btn-block">確認預約</b-button>
       </b-container>
     </section>
   </div>
@@ -195,7 +195,7 @@ export default {
       slide: 0,
       sliding: null,
       text: '...',
-      value: ''
+      dateValue: ''
     }
   },
   methods: {
