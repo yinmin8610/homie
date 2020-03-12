@@ -13,32 +13,63 @@
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore, beatae. Minima est corrupti id, dignissimos a, illo cumque tempore, voluptatem nesciunt officia voluptas iure placeat distinctio labore temporibus in quia excepturi laboriosam quod commodi! Libero sit eaque recusandae, doloribus corporis labore nobis quae suscipit veritatis, similique totam! Quos minus voluptate necessitatibus non, temporibus soluta fugit quisquam voluptatibus aut officia tempora harum, error expedita veniam quae dolore similique perspiciatis illum commodi deserunt aspernatur natus.</p>
       </b-container>
     </section>
-    <section class="lease text-center mb-5">
-      <b-container>
-        <span>June 2, 2017</span>
-        <h2 class="h4 my-2">房屋守則</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore, beatae. Minima est corrupti id, dignissimos a, illo cumque tempore, voluptatem nesciunt officia voluptas iure placeat distinctio labore temporibus in quia excepturi laboriosam quod commodi! Libero sit eaque recusandae, doloribus corporis labore nobis quae suscipit veritatis, similique totam! Quos minus voluptate necessitatibus non, temporibus soluta fugit quisquam voluptatibus aut officia tempora harum, error expedita veniam quae dolore similique perspiciatis illum commodi deserunt aspernatur natus. Doloribus distinctio quod non sed blanditiis possimus, molestias harum at nobis perferendis dolorum recusandae amet, repellat laborum illum tempore suscipit, alias quidem aperiam esse magnam ea quas.</p>
-        <b-button variant="info" size="sm" class="text-primary" v-b-modal.modal-lease>點我打開</b-button>
-      </b-container>
-    </section>
-    <section class="housing">
-      <b-container class="bv-example-row">
-        <b-row>
-          <b-col cols="6" md="3" class="housing-img bg-info p-4">
-            <h5>鹽埕愛河畔翻新時尚套房出租</h5>
-            <span class="text-primary"><b-icon icon="house-fill" variant="primary"></b-icon><label>高雄市</label><label>鹽埕區</label><small class="text-secondary">剩餘 2 空房</small></span>
-          </b-col>
-          <b-col cols="6" md="3" class="housing-img bg-info">Column</b-col>
-          <b-col cols="6" md="3" class="housing-img bg-info">Column</b-col>
-          <b-col cols="6" md="3" class="housing-img bg-info">Column</b-col>
-          <div class="w-100"></div>
-          <b-col cols="6" md="3" class="housing-img bg-info">Column</b-col>
-          <b-col cols="6" md="3" class="housing-img bg-info">Column</b-col>
-          <b-col cols="6" md="3" class="housing-img bg-info">Column</b-col>
-          <b-col cols="6" md="3" class="housing-img bg-info">Column</b-col>
-        </b-row>
-      </b-container>
-    </section>
+    <div v-if="isLogin">
+      <section class="lease text-center mb-5">
+        <b-container>
+          <span>June 2, 2017</span>
+          <h2 class="h4 my-2">房屋守則</h2>
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore, beatae. Minima est corrupti id, dignissimos a, illo cumque tempore, voluptatem nesciunt officia voluptas iure placeat distinctio labore temporibus in quia excepturi laboriosam quod commodi! Libero sit eaque recusandae, doloribus corporis labore nobis quae suscipit veritatis, similique totam! Quos minus voluptate necessitatibus non, temporibus soluta fugit quisquam voluptatibus aut officia tempora harum, error expedita veniam quae dolore similique perspiciatis illum commodi deserunt aspernatur natus. Doloribus distinctio quod non sed blanditiis possimus, molestias harum at nobis perferendis dolorum recusandae amet, repellat laborum illum tempore suscipit, alias quidem aperiam esse magnam ea quas.</p>
+          <b-button variant="info" size="sm" class="text-primary" v-b-modal.modal-lease>點我打開</b-button>
+        </b-container>
+      </section>
+      <section class="housing">
+        <b-container class="bv-example-row">
+          <b-row>
+            <b-col cols="6" md="3" class="housing-img bg-info p-4">
+              <h5>鹽埕愛河畔翻新時尚套房出租</h5>
+              <span class="text-primary">
+                <b-icon icon="house-fill" variant="primary"></b-icon>
+                <label>高雄市</label>
+                <label>鹽埕區</label>
+                <small class="text-secondary">剩餘 2 空房</small>
+              </span>
+            </b-col>
+            <b-col cols="6" md="3" class="housing-img bg-info">Column</b-col>
+            <b-col cols="6" md="3" class="housing-img bg-info">Column</b-col>
+            <b-col cols="6" md="3" class="housing-img bg-info">Column</b-col>
+            <div class="w-100"></div>
+            <b-col cols="6" md="3" class="housing-img bg-info">Column</b-col>
+            <b-col cols="6" md="3" class="housing-img bg-info">Column</b-col>
+            <b-col cols="6" md="3" class="housing-img bg-info">Column</b-col>
+            <b-col cols="6" md="3" class="housing-img bg-info">Column</b-col>
+          </b-row>
+        </b-container>
+      </section>
+    </div>
+    <div v-else>
+      <section>
+        <b-container>
+          <b-row>
+            <b-col md="6" class="mb-2 mb-md-0">
+              <div class="reservation bg-info text-center text-primary py-6">
+                <b-link :to="{ path: '/housingList' }">
+                  <b-icon-book-half-fill></b-icon-book-half-fill>
+                  <h2 class="h5">房源列表</h2>
+                </b-link>
+              </div>
+            </b-col>
+            <b-col md="6">
+              <div class="reservation bg-info text-center text-primary py-6">
+                <b-link :to="{ path: '/reservationList' }">
+                  <b-icon-house-fill></b-icon-house-fill>
+                  <h2 class="h5">預約列表</h2>
+                </b-link>
+              </div>
+            </b-col>
+          </b-row>
+        </b-container>
+      </section>
+    </div>
 
     <b-modal id="modal-lease" title="BootstrapVue">
       <h2 class="my-4">房屋守則</h2>
@@ -47,14 +78,25 @@
   </div>
 </template>
 
+<script>
+export default {
+  name: 'Landlord',
+  data () {
+    return {
+      isLogin: false
+    }
+  }
+}
+</script>
+
 <style scope>
-  .housing-img{
-    height:100%;
-    border: 1px solid white;
-    transform:scale(1,1);
-    transition: all .5s ease-out;
-  }
-  .housing-img:hover{
-    transform:scale(1.2,1.2);
-  }
+.housing-img {
+  height: 100%;
+  border: 1px solid white;
+  transform: scale(1, 1);
+  transition: all 0.5s ease-out;
+}
+.housing-img:hover {
+  transform: scale(1.2, 1.2);
+}
 </style>

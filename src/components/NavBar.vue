@@ -1,6 +1,6 @@
 <template>
   <div class="navBar">
-    <b-navbar toggleable="md" type="light" variant="transparent">
+    <b-navbar toggleable="md" type="light" variant="transparent" v-if="isLogin">
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
       <b-navbar-brand :to="{ path: '/'}">HOMIE</b-navbar-brand>
@@ -13,6 +13,38 @@
         <b-navbar-nav class="ml-auto">
           <b-nav-item href="#" v-b-modal.modal-register>註冊</b-nav-item>
           <b-nav-item href="#" v-b-modal.modal-login>登入</b-nav-item>
+        </b-navbar-nav>
+      </b-collapse>
+    </b-navbar>
+
+    <b-navbar toggleable="md" type="light" variant="transparent" v-else-if="isLogin">
+      <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+
+      <b-navbar-brand :to="{ path: '/'}">HOMIE</b-navbar-brand>
+
+      <b-nav-item :to="{ path: '/tenant'}" class="d-flex align-items-center order-md-1">
+        <b-icon icon="person-fill" class="rounded bg-primary text-white"></b-icon>
+      </b-nav-item>
+
+      <b-collapse id="nav-collapse" is-nav>
+        <b-navbar-nav class="ml-auto">
+          <b-nav-item href="#">登出</b-nav-item>
+        </b-navbar-nav>
+      </b-collapse>
+    </b-navbar>
+
+    <b-navbar toggleable="md" type="light" variant="transparent" v-else>
+      <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+
+      <b-navbar-brand :to="{ path: '/'}">HOMIE</b-navbar-brand>
+
+      <b-nav-item :to="{ path: '/landlord'}" class="d-flex align-items-center order-md-1">
+        <b-icon icon="person-fill" class="rounded bg-primary text-white"></b-icon>
+      </b-nav-item>
+
+      <b-collapse id="nav-collapse" is-nav>
+        <b-navbar-nav class="ml-auto">
+          <b-nav-item href="#">登出</b-nav-item>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
@@ -189,7 +221,8 @@ export default {
       login: {
         email: '',
         password: ''
-      }
+      },
+      isLogin: false
     }
   },
   methods: {

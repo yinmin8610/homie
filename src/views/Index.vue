@@ -73,9 +73,9 @@ export default {
 @import "node_modules/bootstrap/scss/bootstrap";
 @import "node_modules/bootstrap-vue/src/index.scss";
 
-body {
-  background: #fcfcfc;
-}
+// body {
+//   background: #fcfcfc;
+// }
 .banner-img {
   height: 100vh;
   @include media-breakpoint-down(md) {
