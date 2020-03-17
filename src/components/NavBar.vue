@@ -1,20 +1,52 @@
 <template>
   <div class="navBar">
-    <b-navbar toggleable="md" type="light" variant="transparent" class="my-1">
-        <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+    <b-navbar toggleable="md" type="light" variant="transparent" v-if="status.isLogin == false && status.user == 'guest'">
+      <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
-        <b-navbar-brand :to="{ path: '/'}">HOMIE</b-navbar-brand>
+      <b-navbar-brand :to="{ path: '/'}">HOMIE</b-navbar-brand>
 
-        <b-nav-item :to="{ path: '/tenant'}" class="d-flex align-items-center order-md-1">
-          <b-icon icon="person-fill" class="rounded bg-primary text-white"></b-icon>
-        </b-nav-item>
+      <b-nav-item @click.prevent="loginConfirm" class="d-flex align-items-center order-md-1">
+        <b-icon icon="person-fill" class="rounded bg-primary text-white"></b-icon>
+      </b-nav-item>
 
-        <b-collapse id="nav-collapse" is-nav>
-          <b-navbar-nav class="ml-auto">
-            <b-nav-item href="#" v-b-modal.modal-register>註冊</b-nav-item>
-            <b-nav-item href="#" v-b-modal.modal-login>登入</b-nav-item>
-          </b-navbar-nav>
-        </b-collapse>
+      <b-collapse id="nav-collapse" is-nav>
+        <b-navbar-nav class="ml-auto">
+          <b-nav-item href="#" v-b-modal.modal-register>註冊</b-nav-item>
+          <b-nav-item href="#" v-b-modal.modal-login>登入</b-nav-item>
+        </b-navbar-nav>
+      </b-collapse>
+    </b-navbar>
+
+    <b-navbar toggleable="md" type="light" variant="transparent" v-else-if="status.isLogin">
+      <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+
+      <b-navbar-brand :to="{ path: '/'}">HOMIE</b-navbar-brand>
+
+      <b-nav-item :to="{ path: '/tenant'}" class="d-flex align-items-center order-md-1">
+        <b-icon icon="person-fill" class="rounded bg-primary text-white"></b-icon>
+      </b-nav-item>
+
+      <b-collapse id="nav-collapse" is-nav>
+        <b-navbar-nav class="ml-auto">
+          <b-nav-item href="#" @click="logout">登出</b-nav-item>
+        </b-navbar-nav>
+      </b-collapse>
+    </b-navbar>
+
+    <b-navbar toggleable="md" type="light" variant="transparent" v-else>
+      <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+
+      <b-navbar-brand :to="{ path: '/'}">HOMIE</b-navbar-brand>
+
+      <b-nav-item :to="{ path: '/landlord'}" class="d-flex align-items-center order-md-1">
+        <b-icon icon="person-fill" class="rounded bg-primary text-white"></b-icon>
+      </b-nav-item>
+
+      <b-collapse id="nav-collapse" is-nav>
+        <b-navbar-nav class="ml-auto">
+          <b-nav-item href="#">登出</b-nav-item>
+        </b-navbar-nav>
+      </b-collapse>
     </b-navbar>
 
     <b-modal id="modal-register" title="註冊" hide-footer>
@@ -158,6 +190,12 @@
         </b-form>
       </ValidationObserver>
     </b-modal>
+
+    <b-modal id="login-success" title="登入成功" hide-footer></b-modal>
+
+    <b-modal id="register-success" title="註冊成功" hide-footer></b-modal>
+
+    <b-modal id="login-reject" title="請先登入" hide-footer></b-modal>
   </div>
 </template>
 
@@ -195,38 +233,82 @@ export default {
       login: {
         email: '',
         password: ''
+      },
+      status: {
+        isLogin: false,
+        user: 'guest'
       }
     }
   },
   methods: {
     signup () {
       const vm = this
-      const api = `${process.env.VUE_APP_APIPATH}/register`
+      this.axios
+        .get(`${process.env.VUE_APP_APIPATH}/register`)
+        .then(response => {
+          const cacheData = response.data
+          const cacheAccount = cacheData.filter(member => {
+            return member.email === vm.register.email
+          })
 
-      this.axios.post(api, vm.register).then(response => {
-        vm.data = response.data
-        console.log(vm.data)
-        this.$bvModal.hide('modal-register')
-        vm.register.email = ''
-        vm.register.password = ''
-        vm.register.confirmation = ''
-        vm.register.name = ''
-      })
+          if (cacheAccount.length !== 0) return
+          // console.log(cacheAccount, cacheAccount.length)
+          return this.axios.post(
+            `${process.env.VUE_APP_APIPATH}/register`,
+            vm.register
+          )
+        })
+        .then(response => {
+          vm.$bvModal.hide('modal-register')
+          vm.register.email = ''
+          vm.register.password = ''
+          vm.register.confirmation = ''
+          vm.register.name = ''
+          vm.$bvModal.show('register-success')
+        })
     },
     signin () {
       const vm = this
-      const api = `${process.env.VUE_APP_APIPATH}/login`
+      this.axios
+        .get(`${process.env.VUE_APP_APIPATH}/register`)
+        .then(response => {
+          const cacheData = response.data
+          const cacheAccount = cacheData.filter(member => {
+            return member.email === vm.login.email && member.password === vm.password
+          })
 
-      this.axios.post(api, vm.login).then(response => {
-        vm.data = response.data
-        console.log(vm.data)
-        if (response.data.success) {
-          vm.$router.push('/tenant')
-          // this.$bvModal.hide('modal-register')
+          if (cacheAccount.length === 0) return
+          console.log(cacheAccount, cacheAccount.length)
+          return this.axios.post(`${process.env.VUE_APP_APIPATH}/login`, vm.login)
+        })
+        .then(response => {
+          vm.$bvModal.hide('modal-login')
           vm.login.email = ''
           vm.login.password = ''
-        }
-      })
+          vm.$bvModal.show('login-success')
+          vm.status.isLogin = true
+          localStorage.setItem('STATUS', JSON.stringify(this.status))
+        })
+    },
+    logout () {
+      this.status.isLogin = false
+      localStorage.setItem('STATUS', JSON.stringify(this.status))
+    },
+    loginConfirm () {
+      let localData = []
+      localData = JSON.parse(localStorage.getItem('STATUS'))
+
+      if (localData.isLogin) {
+        this.$router.push({ path: '/tenant' })
+      } else {
+        this.$bvModal.show('login-reject')
+      }
+    },
+    storageData () {
+      const localData = JSON.parse(localStorage.getItem('STATUS')) || false
+      if (!localData) {
+        localStorage.setItem('STATUS', JSON.stringify(this.status))
+      }
     },
     onSubmit () {
       console.log('Form submitted yay!')
@@ -243,6 +325,9 @@ export default {
         this.$refs.observer.reset()
       })
     }
+  },
+  created () {
+    this.storageData()
   }
 }
 </script>

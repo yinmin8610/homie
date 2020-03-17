@@ -9,7 +9,7 @@
         <b-row>
           <b-col md="6" class="mb-2 mb-md-0">
             <div class="reservation bg-info text-center text-primary py-6">
-              <b-link :to="{ path: '/record' }">
+              <b-link :to="{ path: '/reservationRecord' }">
                 <b-icon-book-half-fill></b-icon-book-half-fill>
                 <h2 class="h5">預約記錄</h2>
               </b-link>
@@ -17,7 +17,7 @@
           </b-col>
            <b-col md="6">
             <div class="reservation bg-info text-center text-primary py-6">
-              <b-link :to="{ path: '/record2' }">
+              <b-link :to="{ path: '/rentRecord' }">
               <b-icon-house-fill></b-icon-house-fill>
               <h2 class="h5">租屋記錄</h2>
               </b-link>

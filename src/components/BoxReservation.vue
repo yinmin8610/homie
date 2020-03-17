@@ -33,7 +33,7 @@
       </div>
       <b-input-group-append>
         <b-button :to="{ path:'/houses/:id' }" variant="outline-primary" size="lg" class="w-50 mr-1">取消</b-button>
-        <b-button :disabled="invalid" :to="{ path:'/reservation/success' }" variant="primary" size="lg" class="w-50">下一步</b-button>
+        <b-button :disabled="invalid" :to="{ path:'/reservation/success' }" variant="primary" size="lg" class="w-50" @click="reservation">確認預約</b-button>
         <router-view></router-view>
       </b-input-group-append>
       </b-form>
@@ -64,10 +64,20 @@ export default {
         { value: 'a', text: 'This is First option' },
         { value: 'b', text: 'Selected Option' },
         { value: 'd', text: 'This one is disabled', disabled: true }
-      ]
+      ],
+      params: {
+
+      }
     }
   },
   methods: {
+    reservation () {
+      const vm = this
+      const api = `${process.env.VUE_APP_APIPATH}/reservation`
+      this.axios.post(api, { date: this.params.dateValue, hour: vm.ampmSelected, time: vm.timeSelected, user: '', houseId: this.params.houseId, lat: this.params.lat, lng: this.params.lng }).then(response => {
+        // console.log(response.data)
+      })
+    },
     onSubmit () {
       console.log('Form submitted yay!')
     },
@@ -76,7 +86,6 @@ export default {
       this.cardIput2 = ''
       this.cardIput3 = ''
       this.cardIput4 = ''
-      this.text = ''
       this.endDateSelected1 = ''
       this.endDateSelected2 = ''
       this.cardNumber = ''
@@ -85,9 +94,15 @@ export default {
         this.$refs.observer.reset()
       })
     }
+  },
+  created () {
+    this.params.dateValue = this.$route.params.dateValue
+    this.params.houseId = this.$route.params.houseId
+    this.params.lat = this.$route.params.lat
+    this.params.lng = this.$route.params.lng
   }
 }
 </script>
 
-<style scope lang="scss">
+<style scoped lang="scss">
 </style>

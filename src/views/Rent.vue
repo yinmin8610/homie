@@ -4,9 +4,10 @@
   </div>
 </template>
 
-<style scope lang="scss">
-@import "node_modules/bootstrap/scss/bootstrap";
-@import "node_modules/bootstrap-vue/src/index.scss";
+<style lang="scss">
+@import "node_modules/bootstrap/scss/functions";
+@import "../assets/scss/helpers/_variables.scss";
+@import "node_modules/bootstrap/scss/mixins";
 
 .steps-line {
   position: relative;

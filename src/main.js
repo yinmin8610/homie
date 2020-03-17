@@ -21,3 +21,20 @@ new Vue({
   store,
   render: h => h(App)
 }).$mount('#app')
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    // console.log('還沒通過驗證')
+    const status = JSON.parse(localStorage.getItem('STATUS')) || []
+
+    if (status.isLogin === true) {
+      next()
+    } else {
+      next(
+        console.log('還沒通過驗證')
+      )
+    }
+  } else {
+    next()
+  }
+})

@@ -1,6 +1,7 @@
 <template>
   <div class="Detail">
     <b-container>
+      <h1 class="h4 mb-2">{{ house.name }}</h1>
       <b-row class="mb-5">
         <b-col md="9" class="carousel">
           <b-carousel
@@ -16,19 +17,8 @@
             @sliding-start="onSlideStart"
             @sliding-end="onSlideEnd"
           >
-            <!-- Text slides with image -->
-            <b-carousel-slide
-              caption="First slide"
-              text="Nulla vitae elit libero, a pharetra augue mollis interdum."
-              img-src="https://picsum.photos/1024/480/?image=52"
-            ></b-carousel-slide>
-
-            <!-- Slides with custom text -->
-            <b-carousel-slide img-src="https://picsum.photos/1024/480/?image=54">
-              <h1>Hello world!</h1>
-            </b-carousel-slide>
-
-            <!-- Slides with image only -->
+            <b-carousel-slide img-src="https://picsum.photos/1024/480/?image=52"></b-carousel-slide>
+            <b-carousel-slide img-src="https://picsum.photos/1024/480/?image=54"></b-carousel-slide>
             <b-carousel-slide img-src="https://picsum.photos/1024/480/?image=58"></b-carousel-slide>
 
             <!-- Slides with img slot -->
@@ -44,14 +34,7 @@
                 />
               </template>
             </b-carousel-slide>
-
-            <!-- Slide with blank fluid image to maintain slide aspect ratio -->
-            <b-carousel-slide caption="Blank Image" img-blank img-alt="Blank image">
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse eros felis, tincidunt
-                a tincidunt eget, convallis vel est. Ut pellentesque ut lacus vel interdum.
-              </p>
-            </b-carousel-slide>
+            <b-carousel-slide caption="Blank Image" img-blank img-alt="Blank image"></b-carousel-slide>
           </b-carousel>
         </b-col>
         <b-col md="3"></b-col>
@@ -62,32 +45,26 @@
             <ul class="p-0">
               <b-row>
                 <b-col>
-                  <li>押金：</li>
-                  <li>最短租期：</li>
-                  <li>開伙：</li>
+                  <li>押金：{{ house.deposit ? house.deposit : '--'}}</li>
+                  <li>最短租期：{{ house.lease }}</li>
+                  <li>開伙：{{ house.fire }}</li>
                 </b-col>
                 <b-col>
-                  <li>管理費：</li>
-                  <li>性別要求：</li>
-                  <li>車 位：</li>
+                  <li>管理費：{{ house.fee }}</li>
+                  <li>性別要求：{{ house.gender }}</li>
+                  <li>車 位：{{ house.carport }}</li>
                 </b-col>
                 <b-col>
-                  <li>養寵物：</li>
-                  <li>建物面積：</li>
-                  <li>產權登記：</li>
+                  <li>養寵物：{{ house.pet }}</li>
+                  <li>建物面積：{{ house.areal }}</li>
+                  <li>產權登記：{{ house.enroll }}</li>
                 </b-col>
               </b-row>
             </ul>
             <hr />
             <h2 class="h4 py-3">房源描述</h2>
-            <ol class="pl-3">
-              <li>鹽埕愛河畔翻新時尚套房出租(屋主自租)</li>
-              <li>臨愛河畔 浪漫多變 全翻新 小資宅</li>
-              <li>近駁二藝術特區 棧貳庫 高雄電影館 休閒有去處</li>
-              <li>近捷運鹽埕埔站 輕軌大公路站 陸續通車</li>
-              <li>大勇商圈 鹽埕舊城區 文武百業 商店商場林立</li>
-            </ol>
-            <Map></Map>
+            <ol class="pl-3">{{ house.info }}</ol>
+            <Map :lat="house.latitude" :lng="house.longitude" v-if="latlngStatus"></Map>
           </section>
         </b-col>
         <b-col lg="4">
@@ -98,21 +75,21 @@
                 alt
                 class="mr-1 img-fluid"
               />
-              <a href="#">
+              <b-link :to="{ path:'/landlord/:id' }">
                 <b-badge variant="primary" class="p-1">房東姓名</b-badge>
-              </a>
+              </b-link>
             </div>
-            <hr>
+            <hr />
             <div class="d-flex py-2">
               <h4 class="h5 mr-1">房客</h4>
               <small class="text-primary d-flex align-items-end">
                 <b>1</b>位學生
                 <b>1</b>位上班族
               </small>
-               </div>
-              <div class="tenants">
-                <Identity></Identity>
-              </div>
+            </div>
+            <div class="tenants">
+              <Identity></Identity>
+            </div>
           </section>
         </b-col>
       </b-row>
@@ -134,18 +111,14 @@
                   <b-collapse id="accordion-1" visible accordion="my-accordion" role="tabpanel">
                     <b-card-body>
                       <b-card-text>
-                        <!-- I start opened because
-                        <code>visible</code> is
-                        <code>true</code> -->
-                        <img src="../assets/bed.svg" width="35" class="rooms-icon"/>
-                        <img src="../assets/desk.svg" width="35" class="rooms-icon"/>
-                        <img src="../assets/chair.svg" width="35" class="rooms-icon"/>
-                        <img src="../assets/sofa.svg" width="35" class="rooms-icon"/>
-                        <img src="../assets/wardrobe.svg" width="35" class="rooms-icon"/>
-                        <img src="../assets/fridge.svg" width="35" class="rooms-icon"/>
-                        <img src="../assets/television.svg" width="35" class="rooms-icon"/>
+                      <span v-if="rooms.bed"><img src="../assets/images/bed.svg" width="35" class="rooms-icon" /></span>
+                       <span v-if="rooms.desk"><img src="../assets/images/desk.svg" width="35" class="rooms-icon" /></span>
+                       <span v-if="rooms.chair"><img src="../assets/images/chair.svg" width="35" class="rooms-icon" /></span>
+                       <span v-if="rooms.sofa"><img src="../assets/images/sofa.svg" width="35" class="rooms-icon" /></span>
+                       <span v-if="rooms.closet"><img src="../assets/images/wardrobe.svg" width="35" class="rooms-icon" /></span>
+                       <span v-if="rooms.fridge"><img src="../assets/images/fridge.svg" width="35" class="rooms-icon" /></span>
+                       <span v-if="rooms.tv"><img src="../assets/images/television.svg" width="35" class="rooms-icon" /></span>
                       </b-card-text>
-                      <b-card-text>{{ text }}</b-card-text>
                     </b-card-body>
                   </b-collapse>
                 </b-card>
@@ -156,14 +129,26 @@
                   </b-card-header>
                   <b-collapse id="accordion-2" accordion="my-accordion" role="tabpanel">
                     <b-card-body>
-                       <b-card-text>
-                         <img src="../assets/kitchen.svg" width="35" class="rooms-icon"/>
-                         <img src="../assets/elevator.svg" width="35" class="rooms-icon"/>
-                         <img src="../assets/heater.svg" width="35" class="rooms-icon"/>
-                         <img src="../assets/window.svg" width="35" class="rooms-icon"/>
-                         <img src="../assets/wifi.svg" width="35" class="rooms-icon"/>
-                       </b-card-text>
-                      <b-card-text>{{ text }}</b-card-text>
+                      <b-card-text>
+                        <span v-if="rooms.kitchen">
+                          <img src="../assets/images/kitchen.svg" width="35" class="rooms-icon" />
+                        </span>
+                        <span v-if="rooms.kitchen ">
+                          <img src="../assets/images/kitchen.svg" width="35" class="rooms-icon" />
+                        </span>
+                        <span v-if="rooms.elevator">
+                          <img src="../assets/images/elevator.svg" width="35" class="rooms-icon" />
+                        </span>
+                        <span v-if="rooms.heater">
+                          <img src="../assets/images/heater.svg" width="35" class="rooms-icon" />
+                        </span>
+                        <span v-if="rooms.window">
+                          <img src="../assets/images/window.svg" width="35" class="rooms-icon" />
+                        </span>
+                        <span v-if="rooms.wifi">
+                          <img src="../assets/images/wifi.svg" width="35" class="rooms-icon" />
+                        </span>
+                      </b-card-text>
                     </b-card-body>
                   </b-collapse>
                 </b-card>
@@ -172,13 +157,20 @@
           </b-col>
           <b-col md="6">
             <section class="calendar bg-white p-4 border d-flex justify-content-center">
-               <b-calendar v-model="dateValue" :date-disabled-fn="dateDisabled" locale="en"></b-calendar>
+              <b-calendar v-model="dateValue" :date-disabled-fn="dateDisabled" locale="en"></b-calendar>
             </section>
           </b-col>
         </b-row>
-        <b-button :to="{ name: 'BoxReservation', params: { dateValue: dateValue }}" variant="primary" size="lg" class="btn-block">確認預約</b-button>
+        <b-button
+          :disabled="dateValue === ''"
+          variant="primary"
+          size="lg"
+          class="btn-block"
+          @click="loginConfirm"
+        >確認預約</b-button>
       </b-container>
     </section>
+    <b-modal id="login-reject2" title="請先登入" hide-footer></b-modal>
   </div>
 </template>
 
@@ -186,6 +178,7 @@
 import Identity from '@/components/Identity.vue'
 import Map from '@/components/Map.vue'
 export default {
+  name: 'Detail',
   components: {
     Identity,
     Map
@@ -194,11 +187,34 @@ export default {
     return {
       slide: 0,
       sliding: null,
-      text: '...',
-      dateValue: ''
+      dateValue: '',
+      house: {},
+      houseId: '',
+      rooms: {},
+      latlngStatus: false
     }
   },
   methods: {
+    getData (id) {
+      const vm = this
+      const url = `${process.env.VUE_APP_APIPATH}/house/${id}`
+      vm.$http.get(url).then(response => {
+        vm.house = response.data
+        vm.latlngStatus = true
+      })
+      vm.$http.get(`${process.env.VUE_APP_APIPATH}/rooms/${id}`).then(response => {
+        vm.rooms = response.data
+      })
+    },
+    loginConfirm () {
+      const status = JSON.parse(localStorage.getItem('STATUS')) || []
+      // console.dir(status)
+      if (status.isLogin) {
+        this.$router.push({ name: 'BoxReservation', params: { dateValue: this.dateValue, houseId: this.houseId, lat: this.house.latitude, lng: this.house.longitude } })
+      } else {
+        this.$bvModal.show('login-reject2')
+      }
+    },
     onSlideStart (slide) {
       this.sliding = true
     },
@@ -213,6 +229,11 @@ export default {
       // Return `true` if the date should be disabled
       return weekday === 0 || weekday === 6 || day === 13
     }
+  },
+  created () {
+    const vm = this
+    vm.houseId = vm.$route.params.id
+    vm.getData(vm.houseId)
   }
 }
 </script>
@@ -221,9 +242,11 @@ export default {
 ul {
   list-style: none;
 }
-.rooms-icon{
-  padding:5px;
-  border:1px solid #DDE6FA;
-  margin-right:5px;
+.rooms-icon {
+  padding: 5px;
+  background-color: #dde6fa;
+  /* border: 1px solid #dde6fa; */
+  margin-right: 5px;
+  border-radius: 4px;
 }
 </style>

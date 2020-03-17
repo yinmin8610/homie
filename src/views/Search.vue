@@ -3,51 +3,53 @@
     <b-container>
       <b-row class="mb-5">
         <b-col lg="3" class="bg-white rounded border p-5 d-none d-md-block">
-          <b-form-group label="房屋型態">
-            <b-form-radio-group
-              v-model="typeSelected"
-              :options="typeOptions"
-              name="radios-stacked"
-              stacked
-              @change="getTypeData"
-            ></b-form-radio-group>
-          </b-form-group>
-          <b-form-group label="房間類型">
-            <b-form-radio-group
-              v-model="patternSelected"
-              :options="patternOptions"
-              name="radios-stacked"
-              stacked
-              @change="getPatternData"
-            ></b-form-radio-group>
-          </b-form-group>
-          <b-form-group label="坪數">
-            <b-form-radio-group
-              v-model="squareSelected"
-              :options="squareOptions"
-              name="radios-stacked"
-              stacked
-              @change="getSquareData"
-            ></b-form-radio-group>
-          </b-form-group>
-          <b-form-group label="租金">
-            <b-form-radio-group
-              v-model="rentalSelected"
-              :options="rentalOptions"
-              name="radios-stacked"
-              stacked
-              @change="getRentalData"
-            ></b-form-radio-group>
-          </b-form-group>
-          <b-form-group label="其他條件">
-            <b-form-checkbox-group
-              v-model="otherSelected"
-              :options="otherOptions"
-              name="flavour-2a"
-              stacked
-              @change="getOthersData"
-            ></b-form-checkbox-group>
-          </b-form-group>
+          <div class="position-sticky" style="top:0; overflow:scroll; height:800px;">
+            <b-form-group label="房源型態">
+              <b-form-radio-group
+                v-model="typeSelected"
+                :options="typeOptions"
+                name="radios-stacked"
+                stacked
+                @change="getTypeData"
+              ></b-form-radio-group>
+            </b-form-group>
+            <b-form-group label="房間類型">
+              <b-form-radio-group
+                v-model="patternSelected"
+                :options="patternOptions"
+                name="radios-stacked"
+                stacked
+                @change="getPatternData"
+              ></b-form-radio-group>
+            </b-form-group>
+            <b-form-group label="坪數">
+              <b-form-radio-group
+                v-model="squareSelected"
+                :options="squareOptions"
+                name="radios-stacked"
+                stacked
+                @change="getSquareData"
+              ></b-form-radio-group>
+            </b-form-group>
+            <b-form-group label="租金">
+              <b-form-radio-group
+                v-model="rentalSelected"
+                :options="rentalOptions"
+                name="radios-stacked"
+                stacked
+                @change="getRentalData"
+              ></b-form-radio-group>
+            </b-form-group>
+            <b-form-group label="其他條件">
+              <b-form-checkbox-group
+                v-model="otherSelected"
+                :options="otherOptions"
+                name="flavour-2a"
+                stacked
+                @change="getOthersData"
+              ></b-form-checkbox-group>
+            </b-form-group>
+          </div>
         </b-col>
         <b-col lg="3" class="d-md-none mb-2">
           <b-button v-b-toggle.collapse-1 variant="primary">
@@ -55,7 +57,7 @@
           </b-button>
           <b-collapse id="collapse-1" class="mt-2">
             <b-card>
-              <b-form-group label="房屋型態">
+              <b-form-group label="房源型態">
                 <b-form-radio-group
                   v-model="typeSelected"
                   :options="typeOptions"
@@ -117,9 +119,7 @@
           </p>
           <b-row>
             <b-col sm="6" class="mb-2">
-              <b-link :to="{ path: '/houses/:id' }">
-                <Card v-for="(item, key) in data" :card="item" :key="key"></Card>
-              </b-link>
+              <Card v-for="(item, key) in data" :card="item" :key="key"></Card>
             </b-col>
             <!-- <b-col sm="6" class="mb-2">
               <Card></Card>
@@ -254,16 +254,22 @@ export default {
       this.axios.get(api).then(response => {
         vm.data = response.data
       })
+    },
+    getRoomData (id) {
+      console.log('!!!', id)
+      const api = `${process.env.VUE_APP_APIPATH}/rooms/${id}`
+      this.axios.get(api).then(response => {
+        console.log(response)
+      })
     }
   },
-
   created () {
     this.getData()
   }
 }
 </script>
 
-<style scope>
+<style>
 .col-form-label {
   color: #6591fa;
   font-weight: 500;

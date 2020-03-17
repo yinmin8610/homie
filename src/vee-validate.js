@@ -1,4 +1,4 @@
-import { required, confirmed, length, email, numeric } from 'vee-validate/dist/rules'
+import { required, confirmed, length, email, numeric, max } from 'vee-validate/dist/rules'
 import { extend } from 'vee-validate'
 
 extend('required', {
@@ -19,4 +19,8 @@ extend('length', {
 
 extend('numeric', {
   ...numeric
+})
+
+extend('max', {
+  ...max
 })

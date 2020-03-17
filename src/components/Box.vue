@@ -12,7 +12,7 @@
   </div>
 </template>
 
-<style scope>
+<style>
 .form {
   box-shadow: 0 20px 40px rgba(38, 153, 251, 0.2);
   margin-top: calc(5%);

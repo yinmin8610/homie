@@ -101,9 +101,11 @@ export default {
 }
 </script>
 
-<style scope lang="scss">
-@import "node_modules/bootstrap/scss/bootstrap";
-@import "node_modules/bootstrap-vue/src/index.scss";
+<style scoped lang="scss">
+@import "node_modules/bootstrap/scss/functions";
+@import "../assets/scss/helpers/_variables.scss";
+@import "node_modules/bootstrap/scss/mixins";
+
   .record-info{
     background-color:#F4F6FC;
     @include media-breakpoint-down(lg) {

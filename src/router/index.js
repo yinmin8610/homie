@@ -8,7 +8,6 @@ const routes = [
     path: '*',
     redirect: '/404'
   },
-  // 登入前
   {
     path: '/',
     name: '',
@@ -30,32 +29,89 @@ const routes = [
         component: () => import('../views/Detail.vue')
       },
       {
-        path: '/landlord',
+        path: '/landlord/:id',
         name: 'Landlord',
         component: () => import('../views/Landlord.vue')
-      }
-    ]
-  },
-  {
-    path: '/404',
-    name: '404',
-    component: () => import('../views/404.vue')
-  },
-  // 登入後
-  {
-    path: '/',
-    name: '',
-    component: () => import('../views/Home.vue'),
-    children: [
+      },
       {
         path: '/tenant',
         name: 'Tenant',
         component: () => import('../views/Tenant.vue')
       },
       {
-        path: '/reservation',
+        path: '/reservationRecord',
+        name: 'Record',
+        component: () => import('../views/Record.vue')
+      },
+      {
+        path: '/rentRecord',
+        name: 'Record2',
+        component: () => import('../views/Record2.vue')
+      },
+      {
+        path: '/housingList',
+        name: 'HousingList',
+        component: () => import('../views/HousingList.vue')
+      },
+      {
+        path: '/reservationList',
+        name: 'ReservationList',
+        component: () => import('../views/ReservationList.vue')
+      }
+    ]
+  },
+  // 房東新增房源
+  {
+    path: '/addHousing',
+    name: '',
+    component: () => import('../views/Home.vue'),
+    children: [
+      {
+        path: '',
         name: '',
         component: () => import('../views/Reservation.vue'),
+        children: [
+          {
+            path: '',
+            name: 'Type',
+            component: () => import('../components/BoxType.vue')
+          },
+          {
+            path: 'info',
+            name: 'Info',
+            component: () => import('../components/BoxInfo.vue')
+          },
+          {
+            path: 'photo',
+            name: 'Photo',
+            component: () => import('../components/BoxPhoto.vue')
+          },
+          {
+            path: 'room',
+            name: 'Room',
+            component: () => import('../components/BoxRoom.vue')
+          },
+          {
+            path: 'facility',
+            name: 'Facility',
+            component: () => import('../components/BoxFacility.vue')
+          }
+        ]
+      }
+    ]
+  },
+  // 房客預約
+  {
+    path: '/reservation',
+    name: '',
+    component: () => import('../views/Home.vue'),
+    children: [
+
+      {
+        path: '',
+        name: '',
+        component: () => import('../views/Reservation.vue'),
+        meta: { requiresAuth: true },
         children: [
           {
             path: '',
@@ -68,9 +124,17 @@ const routes = [
             component: () => import('../components/BoxSuccess.vue')
           }
         ]
-      },
+      }
+    ]
+  },
+  // 房客租房
+  {
+    path: '/rent',
+    name: '',
+    component: () => import('../views/Home.vue'),
+    children: [
       {
-        path: '/rent',
+        path: '',
         name: '',
         component: () => import('../views/Rent.vue'),
         children: [
@@ -103,21 +167,21 @@ const routes = [
       }
     ]
   },
-  // 需要改
+  // 後台登入
   {
-    path: '/',
+    path: '/login',
     name: '',
     component: () => import('../views/Home.vue'),
     children: [
       {
         path: '',
-        name: 'Record',
-        component: () => import('../views/Record.vue')
+        name: 'Login',
+        component: () => import('../views/Login.vue')
       },
       {
-        path: '/record2',
-        name: 'Record2',
-        component: () => import('../views/Record2.vue')
+        path: '/register',
+        name: 'Register',
+        component: () => import('../views/Register.vue')
       }
     ]
   }
