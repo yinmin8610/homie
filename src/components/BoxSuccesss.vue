@@ -51,7 +51,7 @@ export default {
         rent.forEach(item => {
           if (item.id === this.$route.params.rentId) {
             vm.data.push(item)
-            console.log(vm.data)
+            // console.log(vm.data)
           }
         })
       })

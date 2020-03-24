@@ -92,7 +92,7 @@ export default {
       })
     },
     onSubmit () {
-      console.log('Form submitted yay!')
+      // console.log('Form submitted yay!')
     },
     resetForm () {
       this.cardIput1 = ''

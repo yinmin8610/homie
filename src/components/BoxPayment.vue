@@ -240,13 +240,13 @@ export default {
       const rentData = Object.assign(this.data, newStatus)
 
       vm.$http.post(api, rentData).then(response => {
-        console.log(response.data)
+        // console.log(response.data)
         vm.rentId = response.data.id
         this.$router.push({ name: 'successs', params: { rentId: vm.rentId } })
       })
     },
     onSubmit () {
-      console.log('Form submitted yay!')
+      // console.log('Form submitted yay!')
     },
     resetForm () {
       this.rentInfo.cardIput1 = ''

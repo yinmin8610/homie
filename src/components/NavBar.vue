@@ -280,7 +280,7 @@ export default {
 
       await this.axios.post(`${process.env.VUE_APP_APIPATH}/register`, vm.register)
         .then(response => {
-          console.log('res' + response)
+          // console.log('res' + response)
           vm.$bvModal.hide('modal-register')
           vm.register.email = ''
           vm.register.password = ''
@@ -354,7 +354,7 @@ export default {
       this.$router.push('/')
     },
     onSubmit () {
-      console.log('Form submitted yay!')
+      // console.log('Form submitted yay!')
     },
     resetForm () {
       this.register.email = ''

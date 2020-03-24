@@ -178,7 +178,7 @@ export default {
   },
   methods: {
     onSubmit () {
-      console.log('Form submitted yay!')
+      // console.log('Form submitted yay!')
     },
     resetForm () {
       this.name = ''

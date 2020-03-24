@@ -60,7 +60,7 @@ export default {
       this.$store.commit('REASON', e)
     },
     onSubmit () {
-      console.log('Form submitted yay!')
+      // console.log('Form submitted yay!')
     },
     resetForm () {
       this.rentInfo.reason = ''

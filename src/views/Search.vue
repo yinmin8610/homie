@@ -220,7 +220,7 @@ export default {
               .squareSelected + 10}`
           : ''
       }`
-      console.log(api, this.squareSelected)
+      // console.log(api, this.squareSelected)
 
       this.axios.get(api).then(response => {
         vm.data = response.data
@@ -234,7 +234,7 @@ export default {
               .rentalSelected + 5000}`
           : ''
       }`
-      console.log(api, this.rentalSelected)
+      // console.log(api, this.rentalSelected)
 
       this.axios.get(api).then(response => {
         vm.data = response.data
@@ -248,17 +248,17 @@ export default {
               .rentalSelected + 5000}`
           : ''
       }`
-      console.log(api, this.rentalSelected)
+      // console.log(api, this.rentalSelected)
 
       this.axios.get(api).then(response => {
         vm.data = response.data
       })
     },
     getRoomData (id) {
-      console.log('!!!', id)
+      // console.log('!!!', id)
       const api = `${process.env.VUE_APP_APIPATH}/rooms/${id}`
       this.axios.get(api).then(response => {
-        console.log(response)
+        // console.log(response)
       })
     }
   },

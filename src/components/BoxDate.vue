@@ -84,7 +84,7 @@ export default {
       this.$store.commit('ENDDATE', this.endDate)
     },
     onSubmit () {
-      console.log('Form submitted yay!')
+      // console.log('Form submitted yay!')
     },
     resetForm () {
       this.rentInfo.startDate = ''

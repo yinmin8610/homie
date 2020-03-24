@@ -33,7 +33,7 @@ router.beforeEach((to, from, next) => {
       next()
     } else {
       next(
-        console.log('還沒通過驗證')
+        // console.log('還沒通過驗證')
       )
     }
   } else {

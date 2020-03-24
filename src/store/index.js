@@ -30,7 +30,6 @@ export default new Vuex.Store({
       state.rentInfo.pet += 1
     },
     STARTDATE (state, payload) {
-      console.log(payload)
       state.rentInfo.startDate = payload
     },
     ENDDATE (state, payload) {

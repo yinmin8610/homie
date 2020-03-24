@@ -36,7 +36,7 @@ export default {
         vm.reservation.forEach(item => {
           if (item.id === this.$route.params.reservationId) {
             vm.data.push(item)
-            console.log(vm.data)
+            // console.log(vm.data)
           }
         })
       })

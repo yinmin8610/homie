@@ -156,7 +156,7 @@ export default {
       //     }
       //   })
       // })
-      console.log(cacheData)
+      // console.log(cacheData)
     },
     filterData () {
       this.reservation.forEach(async reservation => {
