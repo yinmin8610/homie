@@ -6,7 +6,7 @@
           <h1 class="h5">登入</h1>
           <small class="d-flex justify-content-end mb-2">
             沒有帳號
-            <b-link :to="{path: '/register'}" class="ml-1">點我註冊</b-link>
+            <b-link :to="{ path: '/admin/register'}" class="ml-1">點我註冊</b-link>
           </small>
           <ValidationObserver ref="observer" v-slot="{ passes, invalid }">
             <b-form @submit.prevent="passes(onSubmit)" @reset="resetForm">
@@ -44,17 +44,18 @@
                   <b-form-invalid-feedback id="inputLiveFeedback">{{ errors[0] }}</b-form-invalid-feedback>
                 </b-form-group>
               </ValidationProvider>
-              <p class="text-center py-2">OR</p>
-              <b-button variant="outline-primary" size="lg" class="btn-block mb-2">使用 Google 登入</b-button>
-              <div class="d-flex justify-content-end">
+
                 <b-button
                   :disabled="invalid"
-                  :to="{ path:'/landlord' }"
+                  @click="signin"
                   variant="primary"
                   size="lg"
                   class="btn-block"
                 >登入</b-button>
-              </div>
+
+              <p class="text-center py-2">OR</p>
+              <b-button variant="outline-primary" size="lg" class="btn-block mb-2">使用 Google 登入</b-button>
+
               <router-view></router-view>
             </b-form>
           </ValidationObserver>
@@ -86,10 +87,43 @@ export default {
     return {
       value: '',
       email: '',
-      password: ''
+      password: '',
+      status: {
+        isLogin: false,
+        user: 'guest',
+        account: '',
+        id: null
+      }
     }
   },
   methods: {
+    signin () {
+      const vm = this
+      let cacheAccount = null
+      this.axios.get(`${process.env.VUE_APP_APIPATH}/register`).then(response => {
+        const cacheData = response.data
+        cacheAccount = cacheData.filter(member => {
+          return (member.email === vm.login.email && member.password === vm.login.password)
+        })
+        if (cacheAccount.length) {
+          const cacheId = cacheData.filter(member => {
+            return member.email === vm.login.email
+          })
+          vm.status.id = cacheId[0].id
+          vm.status.account = vm.login.email
+          vm.$bvModal.hide('modal-login')
+          vm.login.email = ''
+          vm.login.password = ''
+          vm.$bvModal.show('login-success')
+          vm.status.isLogin = true
+          vm.status.user = 'member'
+          localStorage.setItem('STATUS', JSON.stringify(this.status))
+          this.$router.push({ path: '/landlord/:id' })
+        } else {
+          return vm.$bvModal.show('login-fail')
+        }
+      })
+    },
     onSubmit () {
       console.log('Form submitted yay!')
     },

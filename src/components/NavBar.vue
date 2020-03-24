@@ -1,6 +1,35 @@
 <template>
   <div class="navBar">
-    <b-navbar toggleable="md" type="light" variant="transparent" v-if="status.isLogin == false && status.user == 'guest'">
+    <b-navbar
+      toggleable="md"
+      type="light"
+      variant="transparent"
+      v-if="this.status.isLogin && this.status.user == 'member'"
+      style="z-index: 1;"
+    >
+      <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+
+      <b-navbar-brand :to="{ path: '/'}">HOMIE</b-navbar-brand>
+
+      <b-nav-item :to="{ path: `/tenant/${this.status.id}` }" class="d-flex align-items-center order-md-1">
+        <b-icon icon="person-fill" class="rounded bg-primary text-white"></b-icon>
+      </b-nav-item>
+
+      <b-collapse id="nav-collapse" is-nav>
+        <b-navbar-nav class="ml-auto">
+          <b-nav-item href="#" class="active" @click="switchLandlord">切換出租模式</b-nav-item>
+          <b-nav-item href="#" class="active" @click="logout">登出</b-nav-item>
+        </b-navbar-nav>
+      </b-collapse>
+    </b-navbar>
+
+    <b-navbar
+      toggleable="md"
+      type="light"
+      variant="transparent"
+      v-else-if="this.status.isLogin == false && this.status.user == 'guest'"
+      style="z-index: 1;"
+    >
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
       <b-navbar-brand :to="{ path: '/'}">HOMIE</b-navbar-brand>
@@ -17,34 +46,25 @@
       </b-collapse>
     </b-navbar>
 
-    <b-navbar toggleable="md" type="light" variant="transparent" v-else-if="status.isLogin">
+    <b-navbar
+      toggleable="md"
+      type="light"
+      variant="transparent"
+      v-else-if="this.status.isLogin && this.status.user == 'landlord'"
+      style="z-index: 1;"
+    >
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
       <b-navbar-brand :to="{ path: '/'}">HOMIE</b-navbar-brand>
 
-      <b-nav-item :to="{ path: '/tenant'}" class="d-flex align-items-center order-md-1">
+      <b-nav-item :to="{ path: `/landlord/${this.status.id}`}" class="d-flex align-items-center order-md-1">
         <b-icon icon="person-fill" class="rounded bg-primary text-white"></b-icon>
       </b-nav-item>
 
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav class="ml-auto">
+          <b-nav-item href="#" @click="switchTenant">切換租屋模式</b-nav-item>
           <b-nav-item href="#" @click="logout">登出</b-nav-item>
-        </b-navbar-nav>
-      </b-collapse>
-    </b-navbar>
-
-    <b-navbar toggleable="md" type="light" variant="transparent" v-else>
-      <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
-
-      <b-navbar-brand :to="{ path: '/'}">HOMIE</b-navbar-brand>
-
-      <b-nav-item :to="{ path: '/landlord'}" class="d-flex align-items-center order-md-1">
-        <b-icon icon="person-fill" class="rounded bg-primary text-white"></b-icon>
-      </b-nav-item>
-
-      <b-collapse id="nav-collapse" is-nav>
-        <b-navbar-nav class="ml-auto">
-          <b-nav-item href="#">登出</b-nav-item>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
@@ -192,8 +212,10 @@
     </b-modal>
 
     <b-modal id="login-success" title="登入成功" hide-footer></b-modal>
+    <b-modal id="login-fail" title="登入失敗" hide-footer></b-modal>
 
     <b-modal id="register-success" title="註冊成功" hide-footer></b-modal>
+    <b-modal id="register-fail" title="註冊失敗" hide-footer></b-modal>
 
     <b-modal id="login-reject" title="請先登入" hide-footer></b-modal>
   </div>
@@ -236,63 +258,70 @@ export default {
       },
       status: {
         isLogin: false,
-        user: 'guest'
+        user: 'guest',
+        account: '',
+        id: null
       }
     }
   },
   methods: {
-    signup () {
+    async signup () {
       const vm = this
-      this.axios
-        .get(`${process.env.VUE_APP_APIPATH}/register`)
+      let cacheAccount = null
+      await this.axios.get(`${process.env.VUE_APP_APIPATH}/register`)
         .then(response => {
           const cacheData = response.data
-          const cacheAccount = cacheData.filter(member => {
-            return member.email === vm.register.email
-          })
-
-          if (cacheAccount.length !== 0) return
-          // console.log(cacheAccount, cacheAccount.length)
-          return this.axios.post(
-            `${process.env.VUE_APP_APIPATH}/register`,
-            vm.register
-          )
+          cacheAccount = cacheData.filter(member => { return member.email === vm.register.email })
         })
+
+      if (cacheAccount.length) {
+        return vm.$bvModal.show('register-fail')
+      }
+
+      await this.axios.post(`${process.env.VUE_APP_APIPATH}/register`, vm.register)
         .then(response => {
+          console.log('res' + response)
           vm.$bvModal.hide('modal-register')
           vm.register.email = ''
           vm.register.password = ''
           vm.register.confirmation = ''
           vm.register.name = ''
+          vm.status.account = vm.register.email
+          // localStorage.setItem('STATUS', JSON.stringify(this.status))
           vm.$bvModal.show('register-success')
         })
     },
     signin () {
       const vm = this
-      this.axios
-        .get(`${process.env.VUE_APP_APIPATH}/register`)
-        .then(response => {
-          const cacheData = response.data
-          const cacheAccount = cacheData.filter(member => {
-            return member.email === vm.login.email && member.password === vm.password
-          })
-
-          if (cacheAccount.length === 0) return
-          console.log(cacheAccount, cacheAccount.length)
-          return this.axios.post(`${process.env.VUE_APP_APIPATH}/login`, vm.login)
+      let cacheAccount = null
+      this.axios.get(`${process.env.VUE_APP_APIPATH}/register`).then(response => {
+        const cacheData = response.data
+        cacheAccount = cacheData.filter(member => {
+          return (member.email === vm.login.email && member.password === vm.login.password)
         })
-        .then(response => {
+        if (cacheAccount.length) {
+          const cacheId = cacheData.filter(member => {
+            return member.email === vm.login.email
+          })
+          vm.status.id = cacheId[0].id
+          vm.status.account = vm.login.email
           vm.$bvModal.hide('modal-login')
           vm.login.email = ''
           vm.login.password = ''
           vm.$bvModal.show('login-success')
           vm.status.isLogin = true
+          vm.status.user = 'member'
           localStorage.setItem('STATUS', JSON.stringify(this.status))
-        })
+        } else {
+          return vm.$bvModal.show('login-fail')
+        }
+      })
     },
     logout () {
       this.status.isLogin = false
+      this.status.user = 'guest'
       localStorage.setItem('STATUS', JSON.stringify(this.status))
+      this.$router.push({ path: '/' })
     },
     loginConfirm () {
       let localData = []
@@ -305,10 +334,24 @@ export default {
       }
     },
     storageData () {
-      const localData = JSON.parse(localStorage.getItem('STATUS')) || false
+      const localData = JSON.parse(localStorage.getItem('STATUS')) || false // 判斷是否有 localStorage 沒有就是false 就執行setItem
       if (!localData) {
+        // 有值 true
+        // this.status.isLogin = true
         localStorage.setItem('STATUS', JSON.stringify(this.status))
+        return
       }
+      this.status = localData
+    },
+    switchLandlord () {
+      this.status.user = 'landlord'
+      localStorage.setItem('STATUS', JSON.stringify(this.status))
+      this.$router.push('/')
+    },
+    switchTenant () {
+      this.status.user = 'member'
+      localStorage.setItem('STATUS', JSON.stringify(this.status))
+      this.$router.push('/')
     },
     onSubmit () {
       console.log('Form submitted yay!')

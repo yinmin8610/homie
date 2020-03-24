@@ -1,5 +1,5 @@
 <template>
-  <div class="Record">
+  <div class="ReservationRecord">
     <b-container fluid>
       <b-row>
         <b-col md="6" class="p-0">
@@ -41,11 +41,11 @@
             </div>
           </section>
         </b-col>
-        <b-col md="6">
+        <b-col md="6" class="pr-0">
           <section class="record-map">
             <div style="height:100vh;">
               <l-map
-                style="height: 80%; width: 100%"
+                style="height: 100%; width: 100%"
                 :zoom="zoom"
                 :center="center"
                 @update:zoom="zoomUpdated"
@@ -126,13 +126,14 @@ export default {
         { value: '15000-20000元', text: '15000-20000元' },
         { value: '20000元以上', text: '20000元以上' }
       ],
-      reservation: {},
+      reservation: [],
       reservationStatus: false,
       houseId: [],
       room: [],
+      status: {},
       url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      zoom: 8,
-      center: [23.4747265, 120.8397927],
+      zoom: 12,
+      center: [22.623716, 120.284243],
       bounds: null
     }
   },
@@ -140,9 +141,17 @@ export default {
     async getData () {
       const vm = this
       const api = `${process.env.VUE_APP_APIPATH}/reservation`
+      this.status = JSON.parse(localStorage.getItem('STATUS'))
 
       await vm.$http.get(api).then(response => {
-        vm.reservation = response.data
+        let data = {}
+        data = response.data
+
+        data.forEach((item) => {
+          if (item.userId === this.status.id) {
+            vm.reservation.push(item)
+          }
+        })
 
         vm.reservation.forEach(item => {
           vm.houseId.push(item.houseId)
@@ -172,6 +181,7 @@ export default {
             house.room.name = room.name
             house.room.room = room.room // 物件新增
             house.room.monthly = room.monthly
+            house.room.img1 = room.img1
           }
         })
       })

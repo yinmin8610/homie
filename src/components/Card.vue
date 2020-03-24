@@ -1,16 +1,17 @@
 <template>
-  <div class="cards">
+  <div class="cards col-md-6">
     <b-link :to="{ path: `/houses/${card.id}`}" @click="getRoomData(card.id)">
-    <b-card
-      :title="card.name"
-      img-src="https://picsum.photos/600/300/?image=25"
-      img-alt="Image"
-      img-top
-      class="mb-2"
-    >
-      <b-card-text class="d-flex justify-content-end h3">{{card.monthly}}</b-card-text>
-    </b-card>
-     </b-link>
+      <b-card
+        :title="card.name"
+        :img-src="card.imgUrl"
+        img-alt="Image"
+        img-top
+        class="mb-4"
+        img-height="243"
+      >
+        <b-card-text class="d-flex justify-content-end h3">{{card.monthly}}</b-card-text>
+      </b-card>
+    </b-link>
   </div>
 </template>
 
@@ -29,8 +30,7 @@ export default {
     }
   },
   data () {
-    return {
-    }
+    return {}
   },
   methods: {
     getRoomData (id) {
@@ -44,15 +44,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 .card {
   cursor: pointer;
 }
-a{
-  color:black;
+.card-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
- a:hover {
-   color:black;
-    text-decoration: none;
-  }
+a {
+  color: black;
+}
+a:hover {
+  color: black;
+  text-decoration: none;
+}
 </style>

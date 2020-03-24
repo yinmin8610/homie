@@ -19,6 +19,11 @@ const routes = [
         component: () => import('../views/Index.vue')
       },
       {
+        path: '/404',
+        name: 'Error',
+        component: () => import('../views/404.vue')
+      },
+      {
         path: '/houses',
         name: 'Search',
         component: () => import('../views/Search.vue')
@@ -34,7 +39,7 @@ const routes = [
         component: () => import('../views/Landlord.vue')
       },
       {
-        path: '/tenant',
+        path: '/tenant/:id',
         name: 'Tenant',
         component: () => import('../views/Tenant.vue')
       },
@@ -166,25 +171,25 @@ const routes = [
         ]
       }
     ]
-  },
-  // 後台登入
-  {
-    path: '/login',
-    name: '',
-    component: () => import('../views/Home.vue'),
-    children: [
-      {
-        path: '',
-        name: 'Login',
-        component: () => import('../views/Login.vue')
-      },
-      {
-        path: '/register',
-        name: 'Register',
-        component: () => import('../views/Register.vue')
-      }
-    ]
   }
+  // 後台登入
+  // {
+  //   path: '/admin',
+  //   name: '',
+  //   component: () => import('../views/Home.vue'),
+  //   children: [
+  //     {
+  //       path: '',
+  //       name: 'Login',
+  //       component: () => import('../views/Login.vue')
+  //     },
+  //     {
+  //       path: 'register',
+  //       name: 'Register',
+  //       component: () => import('../views/Register.vue')
+  //     }
+  //   ]
+  // }
 ]
 
 const router = new VueRouter({

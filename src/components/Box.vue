@@ -12,6 +12,12 @@
   </div>
 </template>
 
+<script>
+export default {
+  name: 'Box'
+}
+</script>
+
 <style>
 .form {
   box-shadow: 0 20px 40px rgba(38, 153, 251, 0.2);

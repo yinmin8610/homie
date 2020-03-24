@@ -36,8 +36,20 @@
         </b-col>
       </b-row>
       <b-row>
-        <b-table hover :items="items" :fields="column">
-        </b-table>
+        <template>
+          <b-table hover :items="data" :fields="column">
+            <template v-slot:cell(id)="data">{{ data.index +1 }}</template>
+            <template v-slot:cell(name)="data" v-if="houseStatus">
+                 {{ data.item.name }}
+            </template>
+            <template v-slot:cell(dist)="data" v-if="houseStatus">
+                 {{ data.item.county }}{{ data.item.district }}
+            </template>
+             <template v-slot:cell(monthly)="data" v-if="houseStatus">
+                 {{ data.item.monthly }}
+            </template>
+          </b-table>
+        </template>
       </b-row>
     </b-container>
   </div>
@@ -63,9 +75,6 @@ export default {
         { text: '10月', value: 10 },
         { text: '11月', value: 11 },
         { text: '12月', value: 12 }
-      ],
-      items: [
-        // { id: '1', name: this.landlord.house.name, dist: this.landlord.house.county, amount: this.landlord.house.district }
       ],
       column: [
         {
@@ -101,42 +110,45 @@ export default {
       ],
       landlord: [],
       housing: [],
-      houseStatus: false
+      houseStatus: false,
+      status: {},
+      data: []
     }
   },
   methods: {
     async getData () {
-      const api = `${process.env.VUE_APP_APIPATH}/landlord`
+      const api = `${process.env.VUE_APP_APIPATH}/register`
 
       await this.$http.get(api).then(response => {
         this.landlord = response.data
-        console.log(this.landlord)
+        // console.log(this.landlord)
       })
 
       await this.$http.get(`${process.env.VUE_APP_APIPATH}/house`).then(response => {
         this.housing = response.data
-        console.log(this.housing)
+        // console.log(this.housing)
       })
 
       await this.filterData()
     },
     filterData () {
-      this.landlord.forEach((landlord) => {
-        this.housing.forEach((house) => {
-          if (landlord.email === 'yinmin@gmail.com') {
-            landlord.house = {}
-            landlord.house.id = house.id
-            landlord.house.name = house.name
-            landlord.house.county = house.county
-            landlord.house.district = house.district
-          }
-        })
+      this.housing.forEach((house) => {
+        if (house.landlord === this.status.account) {
+          this.data.push({
+            id: house.id,
+            name: house.name,
+            county: house.county,
+            district: house.district
+          })
+        }
       })
+
+      // this.items = this.data
       this.houseStatus = true
-      console.log(this.landlord)
     }
   },
   created () {
+    this.status = JSON.parse(localStorage.getItem('STATUS')) || []
     this.getData()
   }
 }

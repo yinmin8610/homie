@@ -25,7 +25,7 @@
                 class="mr-auto"
               >
                 <b-form-input
-                  v-model="cardIput1"
+                  v-model="cardInput1"
                   placeholder="1234"
                   type="text"
                   :state="errors[0] ? false : (valid ? true : null)"
@@ -39,7 +39,8 @@
                 class="mr-auto"
               >
                 <b-form-input
-                  v-model="cardIput2"
+
+                  v-model="cardInput2"
                   placeholder="5678"
                   type="text"
                   :state="errors[0] ? false : (valid ? true : null)"
@@ -53,7 +54,8 @@
                 class="mr-auto"
               >
                 <b-form-input
-                  v-model="cardIput3"
+
+                  v-model="cardInput3"
                   placeholder="3456"
                   type="text"
                   :state="errors[0] ? false : (valid ? true : null)"
@@ -66,7 +68,8 @@
                 v-slot="{ valid, errors }"
               >
                 <b-form-input
-                  v-model="cardIput4"
+
+                   v-model="cardInput4"
                   placeholder="2456"
                   type="text"
                   :state="errors[0] ? false : (valid ? true : null)"
@@ -84,7 +87,8 @@
           <ValidationProvider rules="required" name="全名" v-slot="{ valid, errors }">
             <label for>全名</label>
             <b-form-input
-              v-model="text"
+
+              v-model="fullName"
               type="text"
               :state="errors[0] ? false : (valid ? true : null)"
             ></b-form-input>
@@ -95,7 +99,8 @@
             <ValidationProvider rules="required" name="到期日" v-slot="{ valid, errors }" class="mr-auto">
               <label for>到期</label>
               <b-form-select
-                v-model="endDateSelected1"
+
+                v-model="endMonth"
                 :options="endDateOptions1"
                 :state="errors[0] ? false : (valid ? true : null)"
                 type="text"
@@ -106,7 +111,8 @@
             <ValidationProvider rules="required" name="到期日" v-slot="{ valid, errors }" class="mr-auto">
               <label for>到期</label>
               <b-form-select
-                v-model="endDateSelected2"
+
+                v-model="endYear"
                 :options="endDateOptions2"
                 :state="errors[0] ? false : (valid ? true : null)"
                 type="text"
@@ -122,6 +128,7 @@
           >
             <label for>CVV</label>
             <b-form-input
+
               v-model="cardNumber"
               placeholder="123"
               :state="errors[0] ? false : (valid ? true : null)"
@@ -139,7 +146,6 @@
           >上一步</b-button>
           <b-button
             :disabled="invalid"
-            :to="{ path:'/rent/successs' }"
             variant="primary"
             size="lg"
             class="w-50"
@@ -154,12 +160,14 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { ValidationObserver, ValidationProvider, localize } from 'vee-validate'
 import TW from 'vee-validate/dist/locale/zh_TW.json'
+
 localize('zh_TW', TW)
 
 export default {
-  name: 'BoxDate',
+  name: 'BoxPayment',
   components: {
     ValidationObserver,
     ValidationProvider
@@ -167,13 +175,14 @@ export default {
   data () {
     return {
       value: '',
-      cardIput1: '',
-      cardIput2: '',
-      cardIput3: '',
-      cardIput4: '',
-      text: '',
-      endDateSelected1: null,
-      endDateSelected2: null,
+      cardInput1: '',
+      cardInput2: '',
+      cardInput3: '',
+      cardInput4: '',
+      fullName: '',
+      endMonth: '',
+      endYear: '',
+      cardNumber: '',
       endDateOptions1: [
         { value: null, text: '月', notEnabled: true },
         { value: '1', text: '1' },
@@ -195,33 +204,70 @@ export default {
         { value: '2022', text: '2022' },
         { value: '2023', text: '2023' }
       ],
-      cardNumber: ''
+      data: {},
+      status: {},
+      rentId: 0
     }
   },
   methods: {
     rentSuccess () {
+      this.$store.commit('CARDINPUT1', this.cardInput1)
+
+      this.$store.commit('CARDINPUT2', this.cardInput2)
+
+      this.$store.commit('CARDINPUT3', this.cardInput3)
+
+      this.$store.commit('CARDINPUT4', this.cardInput4)
+
+      this.$store.commit('FULLNAME', this.fullName)
+
+      this.$store.commit('ENDMONTH', this.endMonth)
+
+      this.$store.commit('ENDYEAR', this.endYear)
+
+      this.$store.commit('CARDNUMBER', this.cardNumber)
+
       const vm = this
       const api = `${process.env.VUE_APP_APIPATH}/rent`
 
-      vm.$http.post(api).then(response => {})
+      this.data = this.$store.state.rentInfo
+      let newStatus = {}
+
+      newStatus = {
+        userId: this.status.id,
+        account: this.status.account
+      }
+      const rentData = Object.assign(this.data, newStatus)
+
+      vm.$http.post(api, rentData).then(response => {
+        console.log(response.data)
+        vm.rentId = response.data.id
+        this.$router.push({ name: 'successs', params: { rentId: vm.rentId } })
+      })
     },
     onSubmit () {
       console.log('Form submitted yay!')
     },
     resetForm () {
-      this.cardIput1 = ''
-      this.cardIput2 = ''
-      this.cardIput3 = ''
-      this.cardIput4 = ''
-      this.text = ''
-      this.endDateSelected1 = ''
-      this.endDateSelected2 = ''
-      this.cardNumber = ''
+      this.rentInfo.cardIput1 = ''
+      this.rentInfo.cardIput2 = ''
+      this.rentInfo.cardIput3 = ''
+      this.rentInfo.cardIput4 = ''
+      this.rentInfo.fullName = ''
+      this.rentInfo.endMonth = ''
+      this.rentInfo.endYear = ''
+      this.rentInfo.cardNumber = ''
 
       requestAnimationFrame(() => {
         this.$refs.observer.reset()
       })
     }
+  },
+  computed: {
+    ...mapGetters(['rentInfo'])
+  },
+  created () {
+    this.status = JSON.parse(localStorage.getItem('STATUS'))
   }
 }
 </script>

@@ -17,7 +17,8 @@
         <ValidationProvider rules="required" name="居住原因" v-slot="{ errors, valid }">
           <b-form-textarea
             id="textarea"
-            v-model="textarea"
+            @update="clickfu"
+            :value="rentInfo.reason"
             placeholder="輸入居住原因及用途，例如：上班"
             rows="3"
             max-rows="6"
@@ -37,8 +38,10 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { ValidationObserver, ValidationProvider, localize } from 'vee-validate'
 import TW from 'vee-validate/dist/locale/zh_TW.json'
+
 localize('zh_TW', TW)
 
 export default {
@@ -49,20 +52,25 @@ export default {
   },
   data () {
     return {
-      value: '',
-      textarea: ''
+      value: ''
     }
   },
   methods: {
+    clickfu (e) {
+      this.$store.commit('REASON', e)
+    },
     onSubmit () {
       console.log('Form submitted yay!')
     },
     resetForm () {
-      this.textarea = ''
+      this.rentInfo.reason = ''
       requestAnimationFrame(() => {
         this.$refs.observer.reset()
       })
     }
+  },
+  computed: {
+    ...mapGetters(['rentInfo'])
   }
 }
 </script>

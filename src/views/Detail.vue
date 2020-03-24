@@ -3,7 +3,36 @@
     <b-container>
       <h1 class="h4 mb-2">{{ house.name }}</h1>
       <b-row class="mb-5">
-        <b-col md="9" class="carousel">
+        <b-col md="7">
+          <img :src="rooms.img1" class="img-fluid" />
+        </b-col>
+        <b-col md="5">
+          <b-row class="no-gutters">
+            <b-col>
+              <img :src="rooms.img1" class="img-fluid" />
+            </b-col>
+            <b-col>
+              <img :src="rooms.img2" class="img-fluid" />
+            </b-col>
+          </b-row>
+          <b-row class="no-gutters">
+            <b-col>
+              <img :src="rooms.img3" class="img-fluid" />
+            </b-col>
+            <b-col>
+              <img :src="rooms.img3" class="img-fluid" />
+            </b-col>
+          </b-row>
+          <b-row class="no-gutters">
+            <b-col>
+              <img :src="rooms.img3" class="img-fluid" />
+            </b-col>
+            <b-col>
+              <img :src="rooms.img3" class="img-fluid" />
+            </b-col>
+          </b-row>
+        </b-col>
+        <!-- <b-col md="6" class="carousel">
           <b-carousel
             id="carousel-1"
             v-model="slide"
@@ -12,36 +41,21 @@
             indicators
             background="#ababab"
             img-width="1024"
-            img-height="480"
+            img-height="400"
             style="text-shadow: 1px 1px 2px #333;"
             @sliding-start="onSlideStart"
             @sliding-end="onSlideEnd"
           >
-            <b-carousel-slide img-src="https://picsum.photos/1024/480/?image=52"></b-carousel-slide>
-            <b-carousel-slide img-src="https://picsum.photos/1024/480/?image=54"></b-carousel-slide>
-            <b-carousel-slide img-src="https://picsum.photos/1024/480/?image=58"></b-carousel-slide>
-
-            <!-- Slides with img slot -->
-            <!-- Note the classes .d-block and .img-fluid to prevent browser default image alignment -->
-            <b-carousel-slide>
-              <template v-slot:img>
-                <img
-                  class="d-block img-fluid w-100"
-                  width="1024"
-                  height="480"
-                  src="https://picsum.photos/1024/480/?image=55"
-                  alt="image slot"
-                />
-              </template>
-            </b-carousel-slide>
-            <b-carousel-slide caption="Blank Image" img-blank img-alt="Blank image"></b-carousel-slide>
+            <b-carousel-slide :img-src="rooms.img1"></b-carousel-slide>
+            <b-carousel-slide :img-src="rooms.img2"></b-carousel-slide>
+            <b-carousel-slide :img-src="rooms.img3"></b-carousel-slide>
           </b-carousel>
-        </b-col>
+        </b-col>-->
         <b-col md="3"></b-col>
       </b-row>
       <b-row class="mb-5 flex-column-reverse flex-lg-row">
         <b-col lg="8">
-          <section class="info p-4 border bg-white">
+          <section class="info p-4 border bg-white mb-3">
             <ul class="p-0">
               <b-row>
                 <b-col>
@@ -61,13 +75,21 @@
                 </b-col>
               </b-row>
             </ul>
-            <hr />
-            <h2 class="h4 py-3">房源描述</h2>
-            <ol class="pl-3">{{ house.info }}</ol>
-            <Map :lat="house.latitude" :lng="house.longitude" v-if="latlngStatus"></Map>
+          </section>
+          <section class="bg-info border p-4">
+            <h2 class="h4 py-3">選擇房間類型</h2>
+            <div class="room border bg-white w-50 p-2" v-b-modal.modal-room>
+              <img src="../assets/images/bed.svg" width="35" class="p-1" />
+              {{rooms.room}}
+            </div>
           </section>
         </b-col>
         <b-col lg="4">
+          <section class="p-4 border bg-white mb-3">
+            <h2 class="h4 py-3">房源描述</h2>
+            <ol class="p-0">{{ house.info }}</ol>
+          </section>
+
           <section class="landlord p-4 border bg-white">
             <div class="mb-3 d-flex align-items-end">
               <img
@@ -75,8 +97,8 @@
                 alt
                 class="mr-1 img-fluid"
               />
-              <b-link :to="{ path:'/landlord/:id' }">
-                <b-badge variant="primary" class="p-1">房東姓名</b-badge>
+              <b-link :to="{ path:`/landlord/${this.landlordId}`}">
+                <b-badge variant="primary" class="p-1">{{this.email}}</b-badge>
               </b-link>
             </div>
             <hr />
@@ -94,14 +116,27 @@
         </b-col>
       </b-row>
     </b-container>
+    <section>
+      <Map :lat="house.latitude" :lng="house.longitude" v-if="latlngStatus"></Map>
+    </section>
 
-    <section class="bg-info">
+    <section class="bg-info"></section>
+    <b-modal id="login-reject2" title="請先登入" hide-footer></b-modal>
+    <b-modal id="modal-room" :title="rooms.room" hide-footer>
       <b-container class="py-5">
-        <div class="rooms mb-md-4 flex-column-reverse flex-lg-row">
-          <b-img thumbnail fluid src="https://picsum.photos/250/250/?image=54" alt="Image 1"></b-img>
+        <h4></h4>
+        <div class="rooms mb-md-4">
+          <b-row class="no-gutters">
+            <b-col>
+              <b-img fluid :src="rooms.img1" alt="Image 1"></b-img>
+            </b-col>
+            <b-col>
+              <b-img fluid :src="rooms.img1" alt="Image 1"></b-img>
+            </b-col>
+          </b-row>
         </div>
         <b-row class="mb-md-4">
-          <b-col md="6">
+          <b-col md="12">
             <section>
               <div role="tablist">
                 <b-card no-body class="mb-1">
@@ -111,13 +146,27 @@
                   <b-collapse id="accordion-1" visible accordion="my-accordion" role="tabpanel">
                     <b-card-body>
                       <b-card-text>
-                      <span v-if="rooms.bed"><img src="../assets/images/bed.svg" width="35" class="rooms-icon" /></span>
-                       <span v-if="rooms.desk"><img src="../assets/images/desk.svg" width="35" class="rooms-icon" /></span>
-                       <span v-if="rooms.chair"><img src="../assets/images/chair.svg" width="35" class="rooms-icon" /></span>
-                       <span v-if="rooms.sofa"><img src="../assets/images/sofa.svg" width="35" class="rooms-icon" /></span>
-                       <span v-if="rooms.closet"><img src="../assets/images/wardrobe.svg" width="35" class="rooms-icon" /></span>
-                       <span v-if="rooms.fridge"><img src="../assets/images/fridge.svg" width="35" class="rooms-icon" /></span>
-                       <span v-if="rooms.tv"><img src="../assets/images/television.svg" width="35" class="rooms-icon" /></span>
+                        <span v-if="rooms.bed">
+                          <img src="../assets/images/bed.svg" width="35" class="rooms-icon" />
+                        </span>
+                        <span v-if="rooms.desk">
+                          <img src="../assets/images/desk.svg" width="35" class="rooms-icon" />
+                        </span>
+                        <span v-if="rooms.chair">
+                          <img src="../assets/images/chair.svg" width="35" class="rooms-icon" />
+                        </span>
+                        <span v-if="rooms.sofa">
+                          <img src="../assets/images/sofa.svg" width="35" class="rooms-icon" />
+                        </span>
+                        <span v-if="rooms.closet">
+                          <img src="../assets/images/wardrobe.svg" width="35" class="rooms-icon" />
+                        </span>
+                        <span v-if="rooms.fridge">
+                          <img src="../assets/images/fridge.svg" width="35" class="rooms-icon" />
+                        </span>
+                        <span v-if="rooms.tv">
+                          <img src="../assets/images/television.svg" width="35" class="rooms-icon" />
+                        </span>
                       </b-card-text>
                     </b-card-body>
                   </b-collapse>
@@ -131,9 +180,6 @@
                     <b-card-body>
                       <b-card-text>
                         <span v-if="rooms.kitchen">
-                          <img src="../assets/images/kitchen.svg" width="35" class="rooms-icon" />
-                        </span>
-                        <span v-if="rooms.kitchen ">
                           <img src="../assets/images/kitchen.svg" width="35" class="rooms-icon" />
                         </span>
                         <span v-if="rooms.elevator">
@@ -155,7 +201,8 @@
               </div>
             </section>
           </b-col>
-          <b-col md="6">
+          <b-col md="12">
+            <h4 class="h5 pt-3">選擇預約看房時間</h4>
             <section class="calendar bg-white p-4 border d-flex justify-content-center">
               <b-calendar v-model="dateValue" :date-disabled-fn="dateDisabled" locale="en"></b-calendar>
             </section>
@@ -167,10 +214,11 @@
           size="lg"
           class="btn-block"
           @click="loginConfirm"
-        >確認預約</b-button>
+        >申請預約看房</b-button>
+        <div class="text-center text-secondary py-2">OR</div>
+        <b-button :to="{ name:'amount', params: { houseId:this.houseId,landlordId: this.landlordId, landlordEmail: this.email, lat: this.house.latitude, lng:this.house.longitude } }" variant="outline-primary" size="lg" class="btn-block">我要租房</b-button>
       </b-container>
-    </section>
-    <b-modal id="login-reject2" title="請先登入" hide-footer></b-modal>
+    </b-modal>
   </div>
 </template>
 
@@ -188,29 +236,53 @@ export default {
       slide: 0,
       sliding: null,
       dateValue: '',
-      house: {},
+      house: [],
       houseId: '',
       rooms: {},
-      latlngStatus: false
+      latlngStatus: false,
+      email: '',
+      landlord: [],
+      landlordId: null
     }
   },
   methods: {
-    getData (id) {
+    async getData (id) {
       const vm = this
       const url = `${process.env.VUE_APP_APIPATH}/house/${id}`
-      vm.$http.get(url).then(response => {
+      await vm.$http.get(url).then(response => {
         vm.house = response.data
+        vm.email = vm.house.landlord
         vm.latlngStatus = true
       })
-      vm.$http.get(`${process.env.VUE_APP_APIPATH}/rooms/${id}`).then(response => {
-        vm.rooms = response.data
+      await vm.$http
+        .get(`${process.env.VUE_APP_APIPATH}/rooms/${id}`)
+        .then(response => {
+          vm.rooms = response.data
+        })
+      await vm.$http.get(`${process.env.VUE_APP_APIPATH}/register`).then(response => {
+        vm.landlord = response.data
+        vm.landlord.forEach(item => {
+          if (item.email === vm.email) {
+            vm.landlordId = item.id
+          }
+        })
       })
     },
     loginConfirm () {
       const status = JSON.parse(localStorage.getItem('STATUS')) || []
       // console.dir(status)
       if (status.isLogin) {
-        this.$router.push({ name: 'BoxReservation', params: { dateValue: this.dateValue, houseId: this.houseId, lat: this.house.latitude, lng: this.house.longitude } })
+        this.$router.push({
+          name: 'BoxReservation',
+          params: {
+            dateValue: this.dateValue,
+            houseId: this.houseId,
+            lat: this.house.latitude,
+            lng: this.house.longitude,
+            landlordId: this.landlordId,
+            landlordEmail: this.email
+          }
+        })
       } else {
         this.$bvModal.show('login-reject2')
       }
@@ -241,6 +313,9 @@ export default {
 <style>
 ul {
   list-style: none;
+}
+.room {
+  cursor: pointer;
 }
 .rooms-icon {
   padding: 5px;

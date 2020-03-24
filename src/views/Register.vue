@@ -9,11 +9,12 @@
           ></div>
         </b-col>
 
-        <b-col md="6" v-if="invalid === true">
+        <b-col md="6">
           <h1 class="h5">註冊</h1>
-          <small class="d-flex justify-content-end mb-2">已有帳號<b-link :to="{path: '/login'}" class="ml-1">
-            點我登入
-          </b-link></small>
+          <small class="d-flex justify-content-end mb-2">
+            已有帳號
+            <b-link :to="{path: '/login'}" class="ml-1">點我登入</b-link>
+          </small>
           <ValidationObserver ref="observer" v-slot="{ passes, invalid }">
             <b-form @submit.prevent="passes(onSubmit)" @reset="resetForm">
               <ValidationProvider name="Email" rules="required|email" v-slot="{ errors, valid }">
@@ -25,7 +26,7 @@
                 >
                   <b-form-input
                     id="input-account"
-                    v-model="email"
+                    v-model="register.email"
                     type="email"
                     :state="errors[0] ? false : (valid ? true : null)"
                     placeholder="輸入Email帳號"
@@ -42,7 +43,7 @@
               >
                 <b-form-group label="密碼" class="mb-2">
                   <b-form-input
-                    v-model="password"
+                    v-model="register.password"
                     type="password"
                     :state="errors[0] ? false : (valid ? true : null)"
                     placeholder="輸入密碼"
@@ -59,7 +60,7 @@
                 >
                   <b-form-select
                     id="input-gender"
-                    v-model="genderSelected"
+                    v-model="register.genderSelected"
                     :options="genderOptions"
                     class="mb-2 mr-sm-2 mb-sm-0"
                     :state="errors[0] ? false : (valid ? true : null)"
@@ -76,14 +77,14 @@
                 >
                   <b-form-input
                     id="input-phone"
-                    v-model="phone"
+                    v-model="register.phone"
                     class="mb-2 mr-sm-2 mb-sm-0"
                     :state="errors[0] ? false : (valid ? true : null)"
                   ></b-form-input>
                 </b-form-group>
               </ValidationProvider>
 
-              <ValidationProvider name="居住地區" rules="required" v-slot="{ valid, errors }">
+              <!-- <ValidationProvider name="居住地區" rules="required" v-slot="{ valid, errors }">
                 <b-form-group
                   id="input-resgister-area"
                   label="居住地區"
@@ -92,13 +93,13 @@
                 >
                   <b-form-select
                     id="input-area"
-                    v-model="area"
+                    v-model="register.areaSelected"
                     :options="areaOptions"
                     class="mb-2 mr-sm-2 mb-sm-0"
                     :state="errors[0] ? false : (valid ? true : null)"
                   ></b-form-select>
                 </b-form-group>
-              </ValidationProvider>
+              </ValidationProvider>-->
 
               <div class="d-flex justify-content-end">
                 <b-link :disabled="invalid" type="submit" variant="primary">下一步</b-link>
@@ -107,7 +108,7 @@
           </ValidationObserver>
         </b-col>
 
-        <b-col md="6" v-else-if="invalid === true">
+        <b-col md="6">
           <h1 class="h5">註冊</h1>
           <b-link :to="{path: '/login'}" class="d-flex justify-content-end mb-2">
             <small>點我登入</small>
@@ -118,7 +119,7 @@
                 <label for="input-info">簡介</label>
                 <b-form-textarea
                   id="input-info"
-                  v-model="info"
+                  v-model="register.info"
                   type="text"
                   :state="errors[0] ? false : (valid ? true : null)"
                   rows="3"
@@ -133,7 +134,7 @@
           </ValidationObserver>
         </b-col>
 
-        <b-col md="6" v-else-if="invalid === true">
+        <b-col md="6">
           <h1 class="h5">註冊</h1>
           <b-link :to="{path: '/login'}" class="d-flex justify-content-end mb-2">
             <small>點我登入</small>
@@ -142,17 +143,23 @@
           <b-form-file
             id="input-resgister-account"
             class="mb-2"
-            v-model="file"
+            v-model="register.file"
             :state="Boolean(file)"
             drop-placeholder="拖曳至此"
           ></b-form-file>
 
           <div class="d-flex justify-content-end">
-            <b-link :disabled="invalid" type="submit" variant="primary" class="mt-2">註冊</b-link>
+            <b-link
+              :disabled="invalid"
+              @click="signup"
+              type="submit"
+              variant="primary"
+              class="mt-2"
+            >註冊</b-link>
           </div>
         </b-col>
 
-        <b-col md="6" v-else>
+        <b-col md="6">
           <h1 class="h3 text-center my-4">註冊成功</h1>
           <div class="d-flex justify-content-center mb-5">
             <img src="../assets/images/success.jpg" height="300" alt />
@@ -179,34 +186,72 @@ export default {
   data () {
     return {
       value: '',
-      email: '',
-      password: '',
-      genderSelected: '',
+      register: {
+        email: '',
+        password: '',
+        genderSelected: 0,
+        phone: '',
+        // areaSelected: 0,
+        info: '',
+        file: null
+      },
       genderOptions: [
         { value: 0, text: '男' },
         { value: 1, text: '女' }
       ],
-      phone: '',
-      areaSelected: '',
-      areaOptions: [
-        { value: 0, text: '男' },
-        { value: 1, text: '女' }
-      ],
-      info: '',
-      file: null
+      status: {
+        isLogin: false,
+        user: 'guest',
+        account: '',
+        id: null
+      }
+      // areaOptions: [
+      //   { value: 0, text: '男' },
+      //   { value: 1, text: '女' }
+      // ]
     }
   },
   methods: {
-    onSubmit () {
-      console.log('Form submitted yay!')
-    },
-    resetForm () {
-      this.email = ''
-      this.password = ''
-      requestAnimationFrame(() => {
-        this.$refs.observer.reset()
-      })
+    async signup () {
+      const vm = this
+      let cacheAccount = null
+      await this.axios
+        .get(`${process.env.VUE_APP_APIPATH}/register`)
+        .then(response => {
+          const cacheData = response.data
+          cacheAccount = cacheData.filter(member => {
+            return member.email === vm.register.email
+          })
+        })
+
+      if (cacheAccount.length) {
+        return vm.$bvModal.show('register-fail')
+      }
+
+      await this.axios
+        .post(`${process.env.VUE_APP_APIPATH}/register`, vm.register)
+        .then(response => {
+          console.log('res' + response)
+          vm.$bvModal.hide('modal-register')
+          vm.register.email = ''
+          vm.register.password = ''
+          vm.register.confirmation = ''
+          vm.register.name = ''
+          vm.status.account = vm.register.email
+          // localStorage.setItem('STATUS', JSON.stringify(this.status))
+          vm.$bvModal.show('register-success')
+        })
     }
+  },
+  onSubmit () {
+    console.log('Form submitted yay!')
+  },
+  resetForm () {
+    this.email = ''
+    this.password = ''
+    requestAnimationFrame(() => {
+      this.$refs.observer.reset()
+    })
   }
 }
 </script>

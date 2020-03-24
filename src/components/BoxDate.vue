@@ -19,7 +19,7 @@
             <label for="example-datepicker">開始日期</label>
             <b-form-datepicker
               id="startdatepicker"
-              v-model="startDateValue"
+              v-model="startDate"
               class="mb-2"
               placeholder="選擇開始日期"
               :state="errors[0] ? false : (valid ? true : null)"
@@ -32,7 +32,7 @@
             <label for="example-datepicker">結束日期</label>
             <b-form-datepicker
               id="enddatepicker"
-              v-model="endDateValue"
+              v-model="endDate"
               class="mb-2"
               placeholder="選擇結束日期"
               :state="errors[0] ? false : (valid ? true : null)"
@@ -49,6 +49,7 @@
             size="lg"
             class="w-50"
             type="submit"
+            @click="clickfu"
           >下一步</b-button>
           <router-view></router-view>
         </b-input-group-append>
@@ -57,8 +58,11 @@
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 import { ValidationObserver, ValidationProvider, localize } from 'vee-validate'
+
 import TW from 'vee-validate/dist/locale/zh_TW.json'
+
 localize('zh_TW', TW)
 
 export default {
@@ -70,21 +74,28 @@ export default {
   data () {
     return {
       value: '',
-      startDateValue: '',
-      endDateValue: ''
+      startDate: '',
+      endDate: ''
     }
   },
   methods: {
+    clickfu () {
+      this.$store.commit('STARTDATE', this.startDate)
+      this.$store.commit('ENDDATE', this.endDate)
+    },
     onSubmit () {
       console.log('Form submitted yay!')
     },
     resetForm () {
-      this.startDateValue = ''
-      this.endDateValue = ''
+      this.rentInfo.startDate = ''
+      this.rentInfo.endDate = ''
       requestAnimationFrame(() => {
         this.$refs.observer.reset()
       })
     }
+  },
+  computed: {
+    ...mapGetters(['rentInfo'])
   }
 }
 </script>

@@ -1,10 +1,10 @@
 <template>
-  <div class="Record">
+  <div class="RentRecord">
     <b-container fluid>
       <b-row>
         <b-col md="6" class="p-0">
-          <section class="record-info p-4">
-            <b-form inline class>
+          <section class="record-info p-4 h-100">
+            <!-- <b-form inline class>
               <label class="sr-only">搜尋房源</label>
               <b-row class="mb-2">
                 <b-col lg="2">
@@ -39,17 +39,36 @@
                   <b-button variant="outline-primary btn-block">編輯</b-button>
                 </b-col>
               </b-row>
-            </b-form>
+            </b-form> -->
             <div class="cardlist d-flex d-xl-block mb-2 mb-xl-0">
-              <CardList></CardList>
-              <CardList></CardList>
-              <CardList></CardList>
+              <template v-if="rentStatus">
+              <CardList v-for="(item, key) in rent" :cardList="item" :key="key"></CardList>
+              </template>
             </div>
           </section>
         </b-col>
         <b-col md="6">
           <section class="record-map">
-            <Map></Map>
+            <div style="height:100vh;">
+              <l-map
+                style="height: 100%; width: 100%"
+                :zoom="zoom"
+                :center="center"
+                @update:zoom="zoomUpdated"
+                @update:center="centerUpdated"
+                @update:bounds="boundsUpdated"
+              >
+                <l-tile-layer :url="url"></l-tile-layer>
+                <template v-if="rentStatus">
+                <l-marker :lat-lng="[item.landlordInfo.lat, item.landlordInfo.lng]" v-for="(item, key) in rent" :key="key">
+                  <l-popup>
+                    <div><b>房源名稱：</b>{{item.room.name}}</div>
+                    <div><b>預約日期：</b>{{item.startDate}} ~ {{item.endDate}}</div>
+                  </l-popup>
+                </l-marker>
+                </template>
+              </l-map>
+            </div>
           </section>
         </b-col>
       </b-row>
@@ -59,12 +78,24 @@
 
 <script>
 import CardList from '@/components/CardList.vue'
-import Map from '@/components/Map.vue'
+import { Icon } from 'leaflet'
+import { LMap, LTileLayer, LMarker, LPopup } from 'vue2-leaflet'
+
+delete Icon.Default.prototype._getIconUrl
+Icon.Default.mergeOptions({
+  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+  iconUrl: require('leaflet/dist/images/marker-icon.png'),
+  shadowUrl: require('leaflet/dist/images/marker-shadow.png')
+})
 
 export default {
+  name: 'RentRecord',
   components: {
     CardList,
-    Map
+    LMap,
+    LTileLayer,
+    LMarker,
+    LPopup
   },
   data () {
     return {
@@ -95,8 +126,81 @@ export default {
         { value: 'a', text: 'This is First option' },
         { value: 'b', text: 'Selected Option' },
         { value: 'd', text: 'This one is disabled', disabled: true }
-      ]
+      ],
+      rent: [],
+      status: {},
+      houseId: [],
+      room: [],
+      url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      zoom: 12,
+      center: [22.623716, 120.284243],
+      bounds: null,
+      rentStatus: false
     }
+  },
+  methods: {
+    async getData () {
+      const vm = this
+      const api = `${process.env.VUE_APP_APIPATH}/rent`
+      this.status = JSON.parse(localStorage.getItem('STATUS'))
+
+      await vm.$http.get(api).then(response => {
+        let data = {}
+        data = response.data
+
+        data.forEach((item) => {
+          if (item.account === this.status.account) {
+            vm.rent.push(item)
+          }
+        })
+
+        vm.rent.forEach(item => {
+          vm.houseId.push(item.landlordInfo.houseId)
+          item.room = {}
+        })
+      })
+      const cache = []
+      await vm.houseId.forEach(id => {
+        cache.push(
+          vm.$http
+            .get(`${process.env.VUE_APP_APIPATH}/rooms/${id}`)
+            .then(response => {
+              vm.room.push(response.data) // 每筆房間資訊
+            })
+        )
+      })
+
+      Promise.all(cache).then(res => {
+        vm.filterData()
+      })
+    },
+    filterData () {
+      this.rent.forEach(async house => {
+        this.room.forEach(room => {
+          if (house.landlordInfo.houseId === String(room.id)) {
+            house.room.id = room.id
+            house.room.name = room.name
+            house.room.room = room.room
+            house.room.monthly = room.monthly
+            house.room.img1 = room.img1
+          }
+        })
+      })
+      this.rentStatus = true
+      // console.log(this.rent)
+    },
+    zoomUpdated (zoom) {
+      this.zoom = zoom
+    },
+    centerUpdated (center) {
+      this.center = center
+    },
+    boundsUpdated (bounds) {
+      this.bounds = bounds
+    }
+  },
+  created () {
+    this.getData()
   }
 }
 </script>

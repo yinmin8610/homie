@@ -33,7 +33,15 @@
       </div>
       <b-input-group-append>
         <b-button :to="{ path:'/houses/:id' }" variant="outline-primary" size="lg" class="w-50 mr-1">取消</b-button>
-        <b-button :disabled="invalid" :to="{ path:'/reservation/success' }" variant="primary" size="lg" class="w-50" @click="reservation">確認預約</b-button>
+        <b-button
+          :disabled="invalid"
+          @click="reservation"
+          variant="primary"
+          size="lg"
+          class="w-50"
+           >
+           確認預約
+        </b-button>
         <router-view></router-view>
       </b-input-group-append>
       </b-form>
@@ -67,15 +75,20 @@ export default {
       ],
       params: {
 
-      }
+      },
+      status: {},
+      reservationId: 0
     }
   },
   methods: {
     reservation () {
       const vm = this
       const api = `${process.env.VUE_APP_APIPATH}/reservation`
-      this.axios.post(api, { date: this.params.dateValue, hour: vm.ampmSelected, time: vm.timeSelected, user: '', houseId: this.params.houseId, lat: this.params.lat, lng: this.params.lng }).then(response => {
-        // console.log(response.data)
+      const data = { date: this.params.dateValue, hour: vm.ampmSelected, time: vm.timeSelected, userId: this.status.id, houseId: this.params.houseId, landlordId: this.$route.params.landlordId, landlordEmail: this.$route.params.landlordEmail, lat: this.params.lat, lng: this.params.lng }
+      this.axios.post(api, data).then(response => {
+        vm.reservationId = response.data.id
+
+        this.$router.push({ name: 'BoxSuccess', params: { landlordEmail: this.$route.params.landlordEmail, reservationId: vm.reservationId } })
       })
     },
     onSubmit () {
@@ -100,6 +113,7 @@ export default {
     this.params.houseId = this.$route.params.houseId
     this.params.lat = this.$route.params.lat
     this.params.lng = this.$route.params.lng
+    this.status = JSON.parse(localStorage.getItem('STATUS'))
   }
 }
 </script>

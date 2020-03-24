@@ -3,7 +3,7 @@
     <b-container>
       <b-row class="mb-5">
         <b-col lg="3" class="bg-white rounded border p-5 d-none d-md-block">
-          <div class="position-sticky" style="top:0; overflow:scroll; height:800px;">
+          <div class="position-sticky" style="top:0; overflow:scroll; height:700px;">
             <b-form-group label="房源型態">
               <b-form-radio-group
                 v-model="typeSelected"
@@ -112,13 +112,13 @@
             </b-input-group>
           </div>
           <p class="h3 text-center py-2">
-            {{this.$route.query.countySelected}}
+            {{ this.$route.query.countySelected }}
             <label
               class="text-secondary ml-1"
             >{{this.$route.query.districtSelected}}</label>
           </p>
           <b-row>
-            <b-col sm="6" class="mb-2">
+            <b-col lg="12" class="mb-2 d-flex flex-wrap">
               <Card v-for="(item, key) in data" :card="item" :key="key"></Card>
             </b-col>
             <!-- <b-col sm="6" class="mb-2">
@@ -191,7 +191,6 @@ export default {
     getData () {
       const vm = this
       const api = `${process.env.VUE_APP_APIPATH}/house?county=${this.$route.query.countySelected}&district=${this.$route.query.districtSelected}`
-      console.log(api)
 
       this.axios.get(api).then(response => {
         vm.data = response.data

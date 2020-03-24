@@ -4,7 +4,7 @@
       <b-card no-body class="overflow-hidden mb-xl-2 mb-0 mr-2 mr-xl-0" style="max-width: 540px;">
         <b-row no-gutters>
           <b-col md="4" class="d-none d-xl-block">
-            <b-card-img src="https://picsum.photos/400/400/?image=20" class="rounded-0"></b-card-img>
+            <b-card-img :src="cardList.room.img1" class="rounded-0" height="100%"></b-card-img>
           </b-col>
           <b-col md="8">
             <b-card-body>
@@ -16,19 +16,27 @@
                 <small class="text-secondary">{{ cardList.room.room }}</small>
               </b-card-title>
               <b-card-text>
-                <b-icon icon="calendar-fill" variant="primary"></b-icon>
-                <label>{{ cardList.date }}</label>
-                <b-icon icon="clock-fill" variant="primary"></b-icon>
-                <label>{{ cardList.time }}</label>
+                <template v-if="cardList.date">
+                  <b-icon icon="calendar-fill" variant="primary"></b-icon>
+                  <label class="mr-2">{{ cardList.date }}</label>
+                  <b-icon icon="clock-fill" variant="primary"></b-icon>
+                  <label>{{ cardList.time }}</label>
+                </template>
+                <template v-if-else>
+                  <b-icon icon="calendar-fill" variant="primary"></b-icon>
+                  <label class="mr-2">{{ cardList.startDate }} </label>
+                  <label class="mr-2">{{ cardList.endDate }}</label>
+                </template>
               </b-card-text>
-              <b-card-text class="d-flex justify-content-end h4">{{ cardList.room.monthly }}/月</b-card-text>
-              <div class="d-flex justify-content-end mt-2">
+              <b-card-text class="d-flex justify-content-end align-items-end h4">{{ cardList.room.monthly }}/月
+               <template v-if="cardList.date">
                 <b-button
                   variant="outline-primary"
-                  :to="{ path:'/rent', params:{ rentId: cardList.id }}"
-                  class="text-primary"
+                  :to="{ name:'amount', params:{ rentId: cardList.id, srcName: $route.name, houseId: cardList.houseId, landlordId: cardList.landlordId, landlordEmail: cardList.landlordEmail, lat:cardList.lat, lng:cardList.lng}}"
+                  class="ml-2 text-primary"
                 >租屋</b-button>
-              </div>
+               </template>
+              </b-card-text>
             </b-card-body>
           </b-col>
         </b-row>
